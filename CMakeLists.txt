@@ -10,7 +10,6 @@ IF(NOT CMAKE_BUILD_TYPE)
     #SET(CMAKE_BUILD_TYPE "MINSIZEREL")
 ENDIF()
 
-include_directories("inc")
 file(GLOB SOURCES "src/*.cpp")
 
 # Find Boost
@@ -21,5 +20,7 @@ message(STATUS "Boost_LIBRARIES: ${Boost_LIBRARIES}")
 
 add_executable(lifelong ${SOURCES} )
 
-target_include_directories(lifelong PRIVATE ${Boost_INCLUDE_DIRS} )
+target_include_directories(lifelong PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/inc
+    ${Boost_INCLUDE_DIRS} )
 target_link_libraries(lifelong PRIVATE ${Boost_LIBRARIES})
