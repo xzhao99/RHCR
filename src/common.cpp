@@ -17,7 +17,7 @@ std::ostream& operator<<(std::ostream& os, const Conflict& conflict)
 	return os;
 }
 
-ostream& operator<<(ostream& os, const Interval& interval)
+std::ostream& operator<<(std::ostream& os, const Interval& interval)
 {
     os << "[" << std::get<0>(interval) << "," << std::get<1>(interval) << ")(" <<
        std::get<2>(interval) << ")";

@@ -17,7 +17,7 @@ void OnlineSystem::update_start_and_goal_locations(int num_of_new_agents)
 {
     // update the start states of the existing agents. Their goal locations remain unchanged.
 	starts.clear();
-	list<int> available_entries;
+	std::list<int> available_entries;
 	for (const auto& entry : G.entries)
 		available_entries.push_back(entry);
 
@@ -42,7 +42,7 @@ void OnlineSystem::update_start_and_goal_locations(int num_of_new_agents)
 		starts.emplace_back(*pt, 0, -1);
 		paths.emplace_back(timestep); // insert a new path of length=timestep for the new agent
 		paths.back().emplace_back(*pt, 0, -1);		
-		available_entries.erase(pt); // set this cell to unavailable
+		available_entries.erase(pt); // std::set this cell to unavailable
 		 // randomly select ab exit cell as the goal
 		idx = rand() % G.exits.size();
 		goal_locations.emplace_back();
@@ -50,9 +50,9 @@ void OnlineSystem::update_start_and_goal_locations(int num_of_new_agents)
 		count++;
 	}
 	num_of_drives = (int)starts.size();
-	cout << count << " new agents arrive and there are " << num_of_drives << " agents in total." << endl;
+	std::cout << count << " new agents arrive and there are " << num_of_drives << " agents in total." << std::endl;
 	if (available_entries.empty())
-		cout << "The entry locations are fully occupied!" << endl;
+		std::cout << "The entry locations are fully occupied!" << std::endl;
 
 }
 
@@ -76,7 +76,7 @@ void OnlineSystem::move()
 				{
 					if (G.get_rotate_degree(prev.orientation, curr.orientation) == 2)
 					{
-						cout << "A drive rotates 180 degrees from " << prev << " to " << curr << endl;
+						std::cout << "A drive rotates 180 degrees from " << prev << " to " << curr << std::endl;
 						save_results();
 						exit(-1);
 					}
@@ -85,14 +85,14 @@ void OnlineSystem::move()
 				{
 					if (prev.orientation != curr.orientation)
 					{
-						cout << "A drive rotates while moving from " << prev << " to " << curr << endl;
+						std::cout << "A drive rotates while moving from " << prev << " to " << curr << std::endl;
 						save_results();
 						exit(-1);
 					}
 					else if (!G.valid_move(prev.location, prev.orientation) ||
 						prev.location + G.move[prev.orientation] != curr.location)
 					{
-						cout << "A drive jumps from " << prev << " to " << curr << endl;
+						std::cout << "A drive jumps from " << prev << " to " << curr << std::endl;
 						save_results();
 						exit(-1);
 					}
@@ -102,7 +102,7 @@ void OnlineSystem::move()
 				int dir = G.get_direction(prev.location, curr.location);
 				if (dir < 0 || !G.valid_move(prev.location, dir))
 				{
-				cout << "A drive jumps from " << prev << " to " << curr << endl;
+				std::cout << "A drive jumps from " << prev << " to " << curr << std::endl;
 				save_results();
 				exit(-1);
 				}
@@ -114,13 +114,13 @@ void OnlineSystem::move()
 			++other_path;
 			for (;other_path != paths.end(); ++other_path)
 			{
-				for (int i = max(0, t - k_robust); i <= min(t + k_robust, end_timestep); i++)
+				for (int i = std::max(0, t - k_robust); i <= std::min(t + k_robust, end_timestep); i++)
 				{
 					if ((int)other_path->size() <= i)
 						break;
 					if (other_path->at(i).location == curr.location)
 					{
-						cout << "Two drives have a conflict at location " << curr.location << " at timestep " << i << endl;
+						std::cout << "Two drives have a conflict at location " << curr.location << " at timestep " << i << std::endl;
 						save_results(); //TODO: write termination reason to files
 						exit(-1);
 					}
@@ -137,7 +137,7 @@ void OnlineSystem::move()
 				}
 				finished_paths.emplace_back(); // insert the path to finsihed paths
 				finished_paths.back().insert(finished_paths.back().end(), start, path->end());
-				path = paths.erase(path); // remove the path from the current path set
+				path = paths.erase(path); // remove the path from the current path std::set
 				goal = goal_locations.erase(goal);
 			}
 			else
@@ -176,7 +176,7 @@ void OnlineSystem::simulate(int simulation_time)
 
 		if (congested())
 		{
-			cout << "***** Too many traffic jams ***" << endl;
+			std::cout << "***** Too many traffic jams ***" << std::endl;
 			break;
 		}
 	}

@@ -1,7 +1,13 @@
 #pragma once
 #include "PBSNode.h"
 #include "MAPFSolver.h"
+#include <cstdint>
 #include <ctime>
+#include <list>
+#include <string>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 // TODO: add topological sorting
 
@@ -33,8 +39,8 @@ public:
 	uint64_t LL_num_generated = 0;
 
 	// Runs the algorithm until the problem is solved or time is exhausted 
-    bool run(const vector<State>& starts,
-            const vector< vector<pair<int, int> > >& goal_locations, // an ordered list of pairs of <location, release time>
+    bool run(const std::vector<State>& starts,
+            const std::vector< std::vector<std::pair<int, int> > >& goal_locations, // an ordered std::list of pairs of <location, release time>
             int time_limit);
 
 
@@ -47,7 +53,7 @@ public:
 	void save_search_tree(const std::string &fileName) const;
 	void save_constraints_in_goal_node(const std::string &fileName) const;
 
-	string get_name() const {return "PBS"; }
+	std::string get_name() const {return "PBS"; }
 
 	void clear();
 
@@ -60,16 +66,16 @@ public:
 private:
 
     std::vector< Path* > paths;
-    list<PBSNode*> allNodes_table;
-    list<PBSNode*> dfs;
+    std::list<PBSNode*> allNodes_table;
+    std::list<PBSNode*> dfs;
 
-   //  vector<State> starts;
-    // vector< vector<int> > goal_locations;
+   //  std::vector<State> starts;
+    // std::vector< std::vector<int> > goal_locations;
 
     std::clock_t start = 0;
 
 	// double focal_w = 1.0;
-    std::unordered_set<pair<int, int>, pair_hash> nogood;
+    std::unordered_set<std::pair<int, int>, pair_hash> nogood;
 
     // SingleAgentICBS astar;
 
@@ -85,16 +91,16 @@ private:
 	bool generate_child(PBSNode* child, PBSNode* curr);
 
 	// conflicts
-    void remove_conflicts(list<Conflict>& conflicts, int excluded_agent);
-    void find_conflicts(const list<Conflict>& old_conflicts, list<Conflict> & new_conflicts, int new_agent);
-	void find_conflicts(list<Conflict> & conflicts, int a1, int a2);
-    void find_conflicts(list<Conflict> & new_conflicts, int new_agent);
-    void find_conflicts(list<Conflict> & new_conflicts);
+    void remove_conflicts(std::list<Conflict>& conflicts, int excluded_agent);
+    void find_conflicts(const std::list<Conflict>& old_conflicts, std::list<Conflict> & new_conflicts, int new_agent);
+	void find_conflicts(std::list<Conflict> & conflicts, int a1, int a2);
+    void find_conflicts(std::list<Conflict> & new_conflicts, int new_agent);
+    void find_conflicts(std::list<Conflict> & new_conflicts);
 
 	void choose_conflict(PBSNode &parent);
-	void copy_conflicts(const list<Conflict>& conflicts, list<Conflict>& copy, int excluded_agent);
-    void copy_conflicts(const list<Conflict>& conflicts,
-                       list<Conflict>& copy, const vector<bool>& excluded_agents);
+	void copy_conflicts(const std::list<Conflict>& conflicts, std::list<Conflict>& copy, int excluded_agent);
+    void copy_conflicts(const std::list<Conflict>& conflicts,
+                       std::list<Conflict>& copy, const std::vector<bool>& excluded_agents);
 
     double get_path_cost(const Path& path) const;
 	
@@ -115,12 +121,11 @@ private:
 
 	// validate
 	bool validate_solution();
-    static bool validate_consistence(const list<Conflict>& conflicts, const PriorityGraph &G) ;
+    static bool validate_consistence(const std::list<Conflict>& conflicts, const PriorityGraph &G) ;
 
 
     // tools
     static bool wait_at_start(const Path& path, int start_location, int timestep) ;
-    void find_replan_agents(PBSNode* node, const list<Conflict>& conflicts,
+    void find_replan_agents(PBSNode* node, const std::list<Conflict>& conflicts,
             std::unordered_set<int>& replan);
 };
-

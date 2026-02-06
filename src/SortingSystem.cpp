@@ -1,5 +1,6 @@
 #include "SortingSystem.h"
 #include <stdlib.h>
+#include <cfloat> // for DBL_MAX
 #include "PBS.h"
 #include <boost/tokenizer.hpp>
 #include "WHCAStar.h"
@@ -70,9 +71,9 @@ void SortingSystem::update_goal_locations()
 {
 	for (int k = 0; k < num_of_drives; k++)
 	{
-		pair<int, int> curr(paths[k][timestep].location, timestep); // current location
+		std::pair<int, int> curr(paths[k][timestep].location, timestep); // current location
 
-		pair<int, int> goal; // The last goal location
+		std::pair<int, int> goal; // The last goal location
 		if (goal_locations[k].empty())
 		{
 			goal = curr;
@@ -82,7 +83,7 @@ void SortingSystem::update_goal_locations()
 			goal = goal_locations[k].back();
 		}
 		int min_timesteps = G.get_Manhattan_distance(curr.first, goal.first); // cannot use h values, because graph edges may have weights  // G.heuristics.at(goal)[curr];
-		min_timesteps = max(min_timesteps, goal.second);
+		min_timesteps = std::max(min_timesteps, goal.second);
 		while (min_timesteps <= simulation_window)
 			// The agent might finish its tasks during the next planning horizon
 		{
@@ -105,8 +106,8 @@ void SortingSystem::update_goal_locations()
 			}
 			goal_locations[k].emplace_back(next, 0);
 			min_timesteps += G.get_Manhattan_distance(next, goal.first); // G.heuristics.at(next)[goal];
-			min_timesteps = max(min_timesteps, goal.second);
-			goal = make_pair(next, 0);
+			min_timesteps = std::max(min_timesteps, goal.second);
+			goal = std::make_pair(next, 0);
 		}
 	}
 }
@@ -175,7 +176,7 @@ void SortingSystem::simulate(int simulation_time)
 
 		if (congested())
 		{
-			cout << "***** Too many traffic jams ***" << endl;
+			std::cout << "***** Too many traffic jams ***" << std::endl;
 			break;
 		}
 	}
@@ -207,7 +208,7 @@ void SortingSystem::initialize()
 		succ = load_locations();
 		if (!succ)
 		{
-			cout << "Randomly generating initial locations" << endl;
+			std::cout << "Randomly generating initial locations" << std::endl;
 			initialize_start_locations();
 			initialize_goal_locations();
 		}

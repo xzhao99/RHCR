@@ -1,5 +1,6 @@
 #include "BasicSystem.h"
 #include <stdlib.h>
+#include <iostream>
 #include <boost/tokenizer.hpp>
 
 
@@ -73,10 +74,10 @@ void BasicSystem::print_MAPF_instance() const
     std::cout << "*** instance " << seed << " ***" << std::endl;
     for (int k = 0; k < (int)starts.size(); k++)
     {
-        cout << "Agent " << k << ": " << starts[k];
+        std::cout << "Agent " << k << ": " << starts[k];
         for (int goal : goal_locations[k])
-            cout << "->" << goal;
-        cout << endl;
+            std::cout << "->" << goal;
+        std::cout << std::endl;
     }
 }
 
@@ -90,8 +91,8 @@ void BasicSystem::save_MAPF_instance(std::string fname) const
     {
         stats << k << "," << starts[k].location;
         for (int goal : goal_locations[k])
-            cout << "," << goal;
-        cout << endl;
+            std::cout << "," << goal;
+        std::cout << std::endl;
     }
     stats.close();
 }
@@ -131,7 +132,7 @@ bool BasicSystem::read_MAPF_instance(std::string fname)
 
 bool BasicSystem::run()
 {
-	bool sol = pbs.run(starts, goal_locations, time_limit, vector<Path>(), PriorityGraph());
+	bool sol = pbs.run(starts, goal_locations, time_limit, std::vector<Path>(), PriorityGraph());
 	pbs.save_results(outfile, std::to_string(num_of_drives) + "," + std::to_string(seed));
 	pbs.best_node->priorities.save_as_digraph("goal_node.gv");
 	return sol;
@@ -140,19 +141,19 @@ bool BasicSystem::run()
 
 bool BasicSystem::load_locations()
 {
-	string fname = G.map_name + "_rotation=" + std::to_string(consider_rotation) +
+	std::string fname = G.map_name + "_rotation=" + std::to_string(consider_rotation) +
 		"_" + std::to_string(num_of_drives) + ".agents";
     std::ifstream myfile (fname.c_str());
     if (!myfile.is_open())
 		return false;
 
-    string line;
+    std::string line;
     getline (myfile,line);
     boost::char_separator<char> sep(",");
 
     if (atoi(line.c_str()) != num_of_drives)
     {
-        cout << "The agent file does not match the settings." << endl;
+        std::cout << "The agent file does not match the settings." << std::endl;
         exit(-1);
     }
     for (int k = 0; k < num_of_drives; k++)
@@ -190,7 +191,7 @@ void BasicSystem::update_paths(const std::vector<Path*>& MAPF_paths, int max_tim
 {
     for (int k = 0; k < num_of_drives; k++)
     {
-        int length = min(max_timestep, (int) MAPF_paths[k]->size());
+        int length = std::min(max_timestep, (int) MAPF_paths[k]->size());
         paths[k].resize(timestep + length);
         for (int t = 0; t < length; t++)
         {
@@ -209,7 +210,7 @@ void BasicSystem::update_paths(const std::vector<Path>& MAPF_paths, int max_time
 {
     for (int k = 0; k < num_of_drives; k++)
     {
-        int length = min(max_timestep, (int) MAPF_paths[k].size());
+        int length = std::min(max_timestep, (int) MAPF_paths[k].size());
         paths[k].resize(timestep + length);
         for (int t = 0; t < length; t++)
         {
@@ -219,7 +220,7 @@ void BasicSystem::update_paths(const std::vector<Path>& MAPF_paths, int max_time
     }
 }
 
-void BasicSystem::update_initial_paths(vector<Path>& initial_paths) const
+void BasicSystem::update_initial_paths(std::vector<Path>& initial_paths) const
 {
     initial_paths.clear();
     initial_paths.resize(num_of_drives);
@@ -250,13 +251,13 @@ void BasicSystem::update_initial_paths(vector<Path>& initial_paths) const
     }
 }
 
-void BasicSystem::update_initial_constraints(list< tuple<int, int, int> >& initial_constraints) const
+void BasicSystem::update_initial_constraints(std::list< std::tuple<int, int, int> >& initial_constraints) const
 {
     initial_constraints.clear();
     for (int k = 0; k < num_of_drives; k++)
     {
         int prev_location = -1;
-        for (int t = timestep; t > max(0, timestep - k_robust); t--)
+        for (int t = timestep; t > std::max(0, timestep - k_robust); t--)
         {
             int curr_location = paths[k][t].location;
             if (curr_location < 0)
@@ -271,7 +272,7 @@ void BasicSystem::update_initial_constraints(list< tuple<int, int, int> >& initi
 }
 
 
-bool BasicSystem::check_collisions(const vector<Path>& input_paths) const
+bool BasicSystem::check_collisions(const std::vector<Path>& input_paths) const
 {
 	for (int a1 = 0; a1 < (int)input_paths.size(); a1++)
 	{
@@ -325,13 +326,13 @@ bool BasicSystem::congested() const
 }
 
 // move all agents from start_timestep to end_timestep
-// return a list of finished tasks
-list<tuple<int, int, int>> BasicSystem::move()
+// return a std::list of finished tasks
+std::list<std::tuple<int, int, int>> BasicSystem::move()
 {
     int start_timestep = timestep;
     int end_timestep = timestep + simulation_window;
 
-	list<tuple<int, int, int>> finished_tasks; // <agent_id, location, timestep>
+	std::list<std::tuple<int, int, int>> finished_tasks; // <agent_id, location, timestep>
 
     for (int t = start_timestep; t <= end_timestep; t++)
     {
@@ -376,7 +377,7 @@ list<tuple<int, int, int>> BasicSystem::move()
                 {
                     if (G.get_rotate_degree(prev.orientation, curr.orientation) == 2)
                     {
-                        cout << "Drive " << k << " rotates 180 degrees from " << prev << " to " << curr << endl;
+                        std::cout << "Drive " << k << " rotates 180 degrees from " << prev << " to " << curr << std::endl;
                         save_results();
                         exit(-1);
                     }
@@ -385,14 +386,14 @@ list<tuple<int, int, int>> BasicSystem::move()
                 {
                     if (prev.orientation != curr.orientation)
 					{
-						cout << "Drive " << k << " rotates while moving from " << prev << " to " << curr << endl;
+						std::cout << "Drive " << k << " rotates while moving from " << prev << " to " << curr << std::endl;
 						save_results();
 						exit(-1);
 					}
 					else if ( !G.valid_move(prev.location, prev.orientation) ||
                         prev.location + G.move[prev.orientation] != curr.location)
                     {
-                        cout << "Drive " << k << " jump from " << prev << " to " << curr << endl;
+                        std::cout << "Drive " << k << " jump from " << prev << " to " << curr << std::endl;
                         save_results();
                         exit(-1);
                     }
@@ -402,7 +403,7 @@ list<tuple<int, int, int>> BasicSystem::move()
 					int dir = G.get_direction(prev.location, curr.location);
 					if (dir < 0 || !G.valid_move(prev.location, dir))
 					{
-						cout << "Drive " << k << " jump from " << prev << " to " << curr << endl;
+						std::cout << "Drive " << k << " jump from " << prev << " to " << curr << std::endl;
 						save_results();
 						exit(-1);
 					}
@@ -414,14 +415,14 @@ list<tuple<int, int, int>> BasicSystem::move()
 			{
 				for (int j = k + 1; j < num_of_drives; j++)
 				{
-					for (int i = max(0, t - k_robust); i <= min(t + k_robust, end_timestep); i++)
+					for (int i = std::max(0, t - k_robust); i <= std::min(t + k_robust, end_timestep); i++)
 					{
 						if ((int)paths[j].size() <= i)
 							break;
 						if (paths[j][i].location == curr.location)
 						{
-							cout << "Drive " << k << " at " << curr << " has a conflict with drive " << j
-								<< " at " << paths[j][i] << endl;
+							std::cout << "Drive " << k << " at " << curr << " has a conflict with drive " << j
+								<< " at " << paths[j][i] << std::endl;
 							save_results(); //TODO: write termination reason to files
 							exit(-1);
 						}
@@ -434,10 +435,10 @@ list<tuple<int, int, int>> BasicSystem::move()
 }
 
 
-void BasicSystem::add_partial_priorities(const vector<Path>& initial_paths, PriorityGraph& initial_priorities) const
+void BasicSystem::add_partial_priorities(const std::vector<Path>& initial_paths, PriorityGraph& initial_priorities) const
 {
-    list<int> low_priorities;
-    list<int> high_priorities;
+    std::list<int> low_priorities;
+    std::list<int> high_priorities;
     for (int k = 0; k < num_of_drives; k++)
     {
         if (initial_paths[k].empty())
@@ -526,7 +527,7 @@ void BasicSystem::update_travel_times(std::unordered_map<int, double>& travel_ti
     travel_times.clear();
     std::unordered_map<int, int> count;
 
-    int t_min = max(0, timestep - travel_time_window);
+    int t_min = std::max(0, timestep - travel_time_window);
     if (t_min >= timestep)
         return;
     for (auto path : paths)
@@ -603,14 +604,14 @@ void BasicSystem::solve()
 		 // solve
 		 if (hold_endpoints || useDummyPaths)
 		 {
-			 vector<State> new_starts;
-			 vector< vector<pair<int, int> > > new_goal_locations;
+			 std::vector<State> new_starts;
+			 std::vector< std::vector<std::pair<int, int> > > new_goal_locations;
 			 for (int i : new_agents)
 			 {
 				 new_starts.emplace_back(starts[i]);
 				 new_goal_locations.emplace_back(goal_locations[i]);
 			 }
-			 vector<Path> planned_paths(num_of_drives);
+			 std::vector<Path> planned_paths(num_of_drives);
 			 solver.initial_rt.clear();
 			 auto p = new_agents.begin();
 			 for (int i = 0; i < num_of_drives; i++)
@@ -645,7 +646,7 @@ void BasicSystem::solve()
 					 }
 					 if (check_collisions(planned_paths))
 					 {
-						 cout << "COLLISIONS!" << endl;
+						 std::cout << "COLLISIONS!" << std::endl;
 						 exit(-1);
 					 }
 				 }
@@ -681,8 +682,8 @@ void BasicSystem::solve()
 										+ std::to_string(num_of_drives) + "," + std::to_string(seed));
 }
 
-bool BasicSystem::solve_by_WHCA(vector<Path>& planned_paths,
-	const vector<State>& new_starts, const vector< vector<pair<int, int> > >& new_goal_locations)
+bool BasicSystem::solve_by_WHCA(std::vector<Path>& planned_paths,
+	const std::vector<State>& new_starts, const std::vector< std::vector<std::pair<int, int> > >& new_goal_locations)
 {
 	WHCAStar whca(G, solver.path_planner);
     whca.k_robust = k_robust;
@@ -751,7 +752,7 @@ bool BasicSystem::load_records()
 {
 	boost::char_separator<char> sep1(";");
 	boost::char_separator<char> sep2(",");
-	string line;
+	std::string line;
 
 	// load paths
 	std::ifstream myfile(outfile + "/paths.txt");
@@ -763,7 +764,7 @@ bool BasicSystem::load_records()
 	getline(myfile, line);
 	if (atoi(line.c_str()) != num_of_drives)
 	{
-		cout << "The path file does not match the settings." << endl;
+		std::cout << "The path file does not match the settings." << std::endl;
 		exit(-1);
 	}
 	for (int k = 0; k < num_of_drives; k++)
@@ -781,7 +782,7 @@ bool BasicSystem::load_records()
 			int time = atoi((*beg).c_str());
 			paths[k].emplace_back(loc, time, orientation);
 		}
-		timestep = min(timestep, paths[k].back().timestep);
+		timestep = std::min(timestep, paths[k].back().timestep);
 	}
 	myfile.close();
 
@@ -796,7 +797,7 @@ bool BasicSystem::load_records()
 	getline(myfile, line);
 	if (atoi(line.c_str()) != num_of_drives)
 	{
-		cout << "The task file does not match the settings." << endl;
+		std::cout << "The task file does not match the settings." << std::endl;
 		exit(-1);
 	}
 	for (int k = 0; k < num_of_drives; k++)
@@ -813,7 +814,7 @@ bool BasicSystem::load_records()
 			if (time >= 0 && time <= timestep)
 			{
 				finished_tasks[k].emplace_back(loc, time);
-				timestep = max(timestep, time);
+				timestep = std::max(timestep, time);
 			}
 			else
 			{

@@ -31,7 +31,7 @@ void set_parameters(BasicSystem& system, const boost::program_options::variables
 
 MAPFSolver* set_solver(const BasicGraph& G, const boost::program_options::variables_map& vm)
 {
-	string solver_name = vm["single_agent_solver"].as<string>();
+	std::string solver_name = vm["single_agent_solver"].as<std::string>();
 	SingleAgentSolver* path_planner;
 	MAPFSolver* mapf_solver;
 	if (solver_name == "ASTAR")
@@ -44,15 +44,15 @@ MAPFSolver* set_solver(const BasicGraph& G, const boost::program_options::variab
 	}
 	else
 	{
-		cout << "Single-agent solver " << solver_name << "does not exist!" << endl;
+		std::cout << "Single-agent solver " << solver_name << "does not exist!" << std::endl;
 		exit(-1);
 	}
 
-	solver_name = vm["solver"].as<string>();
+	solver_name = vm["solver"].as<std::string>();
 	if (solver_name == "ECBS")
 	{
 		ECBS* ecbs = new ECBS(G, *path_planner);
-		ecbs->potential_function = vm["potential_function"].as<string>();
+		ecbs->potential_function = vm["potential_function"].as<std::string>();
 		ecbs->potential_threshold = vm["potential_threshold"].as<double>();
 		ecbs->suboptimal_bound = vm["suboptimal_bound"].as<double>();
 		mapf_solver = ecbs;
@@ -78,7 +78,7 @@ MAPFSolver* set_solver(const BasicGraph& G, const boost::program_options::variab
 	}
 	else
 	{
-		cout << "Solver " << solver_name << "does not exist!" << endl;
+		std::cout << "Solver " << solver_name << "does not exist!" << std::endl;
 		exit(-1);
 	}
 
@@ -108,16 +108,16 @@ int main(int argc, char** argv)
 		("cutoffTime,t", po::value<int>()->default_value(60), "cutoff time (seconds)")
 		("seed,d", po::value<int>(), "random seed")
 		("screen,s", po::value<int>()->default_value(1), "screen option (0: none; 1: results; 2:all)")
-		("solver", po::value<string>()->default_value("PBS"), "solver (LRA, PBS, WHCA, ECBS)")
+		("solver", po::value<std::string>()->default_value("PBS"), "solver (LRA, PBS, WHCA, ECBS)")
 		("id", po::value<bool>()->default_value(false), "independence detection")
-		("single_agent_solver", po::value<string>()->default_value("SIPP"), "single-agent solver (ASTAR, SIPP)")
+		("single_agent_solver", po::value<std::string>()->default_value("SIPP"), "single-agent solver (ASTAR, SIPP)")
 		("lazyP", po::value<bool>()->default_value(false), "use lazy priority")
 		("simulation_time", po::value<int>()->default_value(5000), "run simulation")
 		("simulation_window", po::value<int>()->default_value(5), "call the planner every simulation_window timesteps")
 		("travel_time_window", po::value<int>()->default_value(0), "consider the traffic jams within the given window")
 		("planning_window", po::value<int>()->default_value(INT_MAX / 2),
 		        "the planner outputs plans with first planning_window timesteps collision-free")
-		("potential_function", po::value<string>()->default_value("NONE"), "potential function (NONE, SOC, IC)")
+		("potential_function", po::value<std::string>()->default_value("NONE"), "potential function (NONE, SOC, IC)")
 		("potential_threshold", po::value<double>()->default_value(0), "potential threshold")
 		("rotation", po::value<bool>()->default_value(false), "consider rotation")
 		("robust", po::value<int>()->default_value(0), "k-robust (for now, only work for PBS)")
@@ -148,17 +148,17 @@ int main(int argc, char** argv)
     {
         if (vm["hold_endpoints"].as<bool>() and vm["dummy_paths"].as<bool>())
         {
-            std::cerr << "Hold endpoints and dummy paths cannot be used simultaneously" << endl;
+            std::cerr << "Hold endpoints and dummy paths cannot be used simultaneously" << std::endl;
             exit(-1);
         }
         if (vm["simulation_window"].as<int>() != 1)
         {
-            std::cerr << "Hold endpoints and dummy paths can only work when the simulation window is 1" << endl;
+            std::cerr << "Hold endpoints and dummy paths can only work when the simulation window is 1" << std::endl;
             exit(-1);
         }
         if (vm["planning_window"].as<int>() < INT_MAX / 2)
         {
-            std::cerr << "Hold endpoints and dummy paths cannot work with planning windows" << endl;
+            std::cerr << "Hold endpoints and dummy paths cannot work with planning windows" << std::endl;
             exit(-1);
         }
     }
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
 	}
 
 
-	if (vm["scenario"].as<string>() == "KIVA")
+	if (vm["scenario"].as<std::string>() == "KIVA")
 	{
 		KivaGrid G;
 		if (!G.load_map(vm["map"].as<std::string>()))
@@ -187,7 +187,7 @@ int main(int argc, char** argv)
 		system.simulate(vm["simulation_time"].as<int>());
 		return 0;
 	}
-	else if (vm["scenario"].as<string>() == "SORTING")
+	else if (vm["scenario"].as<std::string>() == "SORTING")
 	{
 		 SortingGrid G;
 		 if (!G.load_map(vm["map"].as<std::string>()))
@@ -201,7 +201,7 @@ int main(int argc, char** argv)
 		 system.simulate(vm["simulation_time"].as<int>());
 		 return 0;
 	}
-	else if (vm["scenario"].as<string>() == "ONLINE")
+	else if (vm["scenario"].as<std::string>() == "ONLINE")
 	{
 		OnlineGrid G;
 		if (!G.load_map(vm["map"].as<std::string>()))
@@ -215,7 +215,7 @@ int main(int argc, char** argv)
 		system.simulate(vm["simulation_time"].as<int>());
 		return 0;
 	}
-	else if (vm["scenario"].as<string>() == "BEE")
+	else if (vm["scenario"].as<std::string>() == "BEE")
 	{
 		BeeGraph G;
 		if (!G.load_map(vm["map"].as<std::string>()))
@@ -229,37 +229,37 @@ int main(int argc, char** argv)
 		system.load_task_assignments(vm["task"].as<std::string>());
 		system.simulate();
 		double runtime = (double)(clock() - start_time)/ CLOCKS_PER_SEC;
-		cout << "Overall runtime:			" << runtime << " seconds." << endl;
-		// cout << "	Reading from file:		" << G.loading_time + system.loading_time << " seconds." << endl;
-		// cout << "	Preprocessing:			" << G.preprocessing_time << " seconds." << endl;
-		// cout << "	Writing to file:		" << system.saving_time << " seconds." << endl;
-		cout << "Makespan:		" << system.get_makespan() << " timesteps." << endl;
-		cout << "Flowtime:		" << system.get_flowtime() << " timesteps." << endl;
-		cout << "Flowtime lowerbound:	" << system.get_flowtime_lowerbound() << " timesteps." << endl;
+		std::cout << "Overall runtime:			" << runtime << " seconds." << std::endl;
+		// std::cout << "	Reading from file:		" << G.loading_time + system.loading_time << " seconds." << std::endl;
+		// std::cout << "	Preprocessing:			" << G.preprocessing_time << " seconds." << std::endl;
+		// std::cout << "	Writing to file:		" << system.saving_time << " seconds." << std::endl;
+		std::cout << "Makespan:		" << system.get_makespan() << " timesteps." << std::endl;
+		std::cout << "Flowtime:		" << system.get_flowtime() << " timesteps." << std::endl;
+		std::cout << "Flowtime lowerbound:	" << system.get_flowtime_lowerbound() << " timesteps." << std::endl;
 		auto flower_ids = system.get_missed_flower_ids();
-		cout << "Missed tasks:";
+		std::cout << "Missed tasks:";
 		for (auto id : flower_ids)
-			cout << " " << id;
-		cout << endl;
-		// cout << "Remaining tasks: " << system.get_num_of_remaining_tasks() << endl;
-		cout << "Objective: " << system.get_objective() << endl;
+			std::cout << " " << id;
+		std::cout << std::endl;
+		// std::cout << "Remaining tasks: " << system.get_num_of_remaining_tasks() << std::endl;
+		std::cout << "Objective: " << system.get_objective() << std::endl;
 		std::ofstream output;
 		output.open(vm["output"].as<std::string>() + "/MAPF_results.txt", std::ios::out);
-		output << "Overall runtime: " << runtime << " seconds." << endl;;
-		output << "Makespan: " << system.get_makespan() << " timesteps." << endl;
-		output << "Flowtime: " << system.get_flowtime() << " timesteps." << endl;
-		output << "Flowtime lowerbound: " << system.get_flowtime_lowerbound() << " timesteps." << endl;
+		output << "Overall runtime: " << runtime << " seconds." << std::endl;;
+		output << "Makespan: " << system.get_makespan() << " timesteps." << std::endl;
+		output << "Flowtime: " << system.get_flowtime() << " timesteps." << std::endl;
+		output << "Flowtime lowerbound: " << system.get_flowtime_lowerbound() << " timesteps." << std::endl;
 		output << "Missed tasks:";
 		for (auto id : flower_ids)
 			output << " " << id;
-		output << endl;
-		output << "Objective: " << system.get_objective() << endl;
+		output << std::endl;
+		output << "Objective: " << system.get_objective() << std::endl;
 		output.close();
         return 0;
 	}
 	else
 	{
-		cout << "Scenario " << vm["scenario"].as<string>() << "does not exist!" << endl;
+		std::cout << "Scenario " << vm["scenario"].as<std::string>() << "does not exist!" << std::endl;
 		return -1;
 	}
 }

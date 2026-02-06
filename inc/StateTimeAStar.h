@@ -1,5 +1,13 @@
 #pragma once
 #include "SingleAgentSolver.h"
+#include <cstddef>
+#include <cstdlib>
+#include <list>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 
 class StateTimeAStarNode
@@ -14,19 +22,19 @@ public:
     bool in_openlist;
     int goal_id; // the id of its current goal.
 
-    // the following is used to comapre nodes in the OPEN list
+    // the following is used to comapre nodes in the OPEN std::list
     struct compare_node
     {
-        // returns true if n1 > n2 (note -- this gives us *min*-heap).
+        // returns true if n1 > n2 (note -- this gives us *std::min*-heap).
         bool operator()(const StateTimeAStarNode* n1, const StateTimeAStarNode* n2) const
         {
             if (n1->g_val + n1->h_val == n2->g_val + n2->h_val)
                 return rand() % 2 == 0;  // break ties randomly
             return n1->g_val + n1->h_val >= n2->g_val + n2->h_val;
         }
-    };  // used by OPEN (heap) to compare nodes (top of the heap has min f-val, and then highest g-val)
+    };  // used by OPEN (heap) to compare nodes (top of the heap has std::min f-val, and then highest g-val)
 
-    // the following is used to comapre nodes in the FOCAL list
+    // the following is used to comapre nodes in the FOCAL std::list
     struct secondary_compare_node
     {
         bool operator()(const StateTimeAStarNode* n1, const StateTimeAStarNode* n2) const // returns true if n1 > n2
@@ -37,7 +45,7 @@ public:
             }
             return n1->conflicts >= n2->conflicts;  // n1 > n2 if it has more conflicts
         }
-    };  // used by FOCAL (heap) to compare nodes (top of the heap has min number-of-conflicts)
+    };  // used by FOCAL (heap) to compare nodes (top of the heap has std::min number-of-conflicts)
 
 
     // define a typedefs for handles to the heaps (allow up to quickly update a node in the heap)
@@ -106,15 +114,15 @@ class StateTimeAStar: public SingleAgentSolver
 {
 public:
     // find path by time-space A* search
-    Path run(const BasicGraph& G, const State& start, const vector<pair<int, int> >& goal_location,
+    Path run(const BasicGraph& G, const State& start, const std::vector<std::pair<int, int> >& goal_location,
                   ReservationTable& RT);
 
-	string getName() const { return "AStar"; }
+	std::string getName() const { return "AStar"; }
     void findTrajectory(const BasicGraph& G,
                         const State& start,
-                        const vector<pair<int, int> >& goal_locations,
+                        const std::vector<std::pair<int, int> >& goal_locations,
                         const std::unordered_map<int, double>& travel_times,
-                        list<pair<int, int> >& path);
+                        std::list<std::pair<int, int> >& path);
     StateTimeAStar(): SingleAgentSolver() {}
 
 private:
@@ -126,5 +134,5 @@ private:
 
     // Updates the path
     Path updatePath(const StateTimeAStarNode* goal);
-    list<pair<int, int> > updateTrajectory(const StateTimeAStarNode* goal);
+    std::list<std::pair<int, int> > updateTrajectory(const StateTimeAStarNode* goal);
 };

@@ -1,6 +1,10 @@
 #pragma once
 #include "BasicSystem.h"
 #include "BeeGraph.h"
+#include <list>
+#include <string>
+#include <utility>
+#include <vector>
 
 class BeeSystem :
 	public BasicSystem
@@ -8,10 +12,10 @@ class BeeSystem :
 public:
 	BeeSystem(const BeeGraph& G, MAPFSolver& solver);
 	~BeeSystem();
-	bool load_task_assignments(string fname);
+	bool load_task_assignments(std::string fname);
 	int get_num_of_missed_tasks() const; // the robots reach these tasks after their deadlines
 	int get_num_of_remaining_tasks() const; // the robots have not complete these tasks
-	list<int> get_missed_flower_ids() const; // return the ids of the flowers that the robot supposed to complete but didn't
+	std::list<int> get_missed_flower_ids() const; // return the ids of the flowers that the robot supposed to complete but didn't
 	int get_makespan();
 	int get_flowtime() const;
 	int get_flowtime_lowerbound() const;
@@ -21,10 +25,9 @@ public:
 	void simulate();
 private:
 	const BeeGraph& G;
-	vector<list<pair<int, int> > > task_sequences; // one task sequence per agent
+	std::vector<std::list<std::pair<int, int> > > task_sequences; // one task sequence per agent
 	void initialize();
 	void initialize_start_locations();
 	void update_goal_locations();
-	void solve_VRP_by_LKH3(string fname);
+	void solve_VRP_by_LKH3(std::string fname);
 };
-

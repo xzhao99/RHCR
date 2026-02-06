@@ -5,11 +5,11 @@
 WHCAStar::WHCAStar(const BasicGraph &G, SingleAgentSolver& path_planner) : MAPFSolver(G, path_planner) {}
 
 
-bool WHCAStar::run(const vector<State>& starts,
-                   const vector< vector<pair<int, int> > >& goal_locations,
+bool WHCAStar::run(const std::vector<State>& starts,
+                   const std::vector< std::vector<std::pair<int, int> > >& goal_locations,
                    int time_limit)
 {
-    // set timer
+    // std::set timer
     clock_t start = std::clock();
     num_expanded = 0;
     num_generated = 0;

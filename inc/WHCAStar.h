@@ -1,7 +1,11 @@
 #pragma once
 #include "SIPP.h"
 #include "MAPFSolver.h"
+#include <cstdint>
 #include <ctime>
+#include <string>
+#include <utility>
+#include <vector>
 
 // WHCA* with random restart
 class WHCAStar :
@@ -13,14 +17,14 @@ public:
     uint64_t num_generated;
     uint64_t num_restarts;
 
-    vector<Path> initial_solution;
+    std::vector<Path> initial_solution;
 
     // Runs the algorithm until the problem is solved or time is exhausted
-    bool run(const vector<State>& starts,
-             const vector< vector<pair<int, int> > >& goal_locations,
+    bool run(const std::vector<State>& starts,
+             const std::vector< std::vector<std::pair<int, int> > >& goal_locations,
              int time_limit);
 
-	string get_name() const {return "WHCA"; }
+	std::string get_name() const {return "WHCA"; }
 
     void save_results(const std::string &fileName, const std::string &instanceName) const;
 	void save_search_tree(const std::string &fileName) const {}

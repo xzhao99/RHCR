@@ -5,7 +5,8 @@
 #include <sstream>
 #include <random>
 #include <chrono>
-
+#include <iostream>
+#include <cfloat> // Required for DBL_MAX
 
 void BasicGraph::print_map() const
 {  
@@ -37,9 +38,9 @@ int BasicGraph::get_rotate_degree(int dir1, int dir2) const
 }
 
 
-list<int> BasicGraph::get_neighbors(int v) const
+std::list<int> BasicGraph::get_neighbors(int v) const
 {
-    list<int> neighbors;
+    std::list<int> neighbors;
     if (v < 0)
         return neighbors;
 
@@ -50,9 +51,9 @@ list<int> BasicGraph::get_neighbors(int v) const
     return neighbors;
 }
 
-list<State> BasicGraph::get_neighbors(const State& s) const
+std::list<State> BasicGraph::get_neighbors(const State& s) const
 {
-    list<State> neighbors;
+    std::list<State> neighbors;
     if (s.location < 0)
         return neighbors;
     if (s.orientation >= 0)

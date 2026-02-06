@@ -1,6 +1,10 @@
 #pragma once
 #include "StateTimeAStar.h"
 #include "SingleAgentSolver.h"
+#include <string>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 // TODO: make SIPP work with edge-weighted graphs
 
 
@@ -10,19 +14,19 @@ public:
 	SIPPNode* parent;
     Interval interval;
 
-    // the following is used to comapre nodes in the OPEN list
+    // the following is used to comapre nodes in the OPEN std::list
     struct compare_node
     {
-        // returns true if n1 > n2 (note -- this gives us *min*-heap).
+        // returns true if n1 > n2 (note -- this gives us *std::min*-heap).
         bool operator()(const SIPPNode* n1, const SIPPNode* n2) const
         {
             if (n1->g_val + n1->h_val == n2->g_val + n2->h_val)
                 return n1->g_val <= n2->g_val;  // break ties towards larger g_vals
             return n1->g_val + n1->h_val >= n2->g_val + n2->h_val;
         }
-    };  // used by OPEN (heap) to compare nodes (top of the heap has min f-val, and then highest g-val)
+    };  // used by OPEN (heap) to compare nodes (top of the heap has std::min f-val, and then highest g-val)
 
-    // the following is used to comapre nodes in the FOCAL list
+    // the following is used to comapre nodes in the FOCAL std::list
     struct secondary_compare_node
     {
         bool operator()(const SIPPNode* n1, const SIPPNode* n2) const // returns true if n1 > n2
@@ -35,7 +39,7 @@ public:
             }
             return n1->conflicts >= n2->conflicts;  // n1 > n2 if it has more conflicts
         }
-    };  // used by FOCAL (heap) to compare nodes (top of the heap has min number-of-conflicts)
+    };  // used by FOCAL (heap) to compare nodes (top of the heap has std::min number-of-conflicts)
 
 
     // define a typedefs for handles to the heaps (allow up to quickly update a node in the heap)
@@ -85,9 +89,9 @@ class SIPP: public SingleAgentSolver
 {
 public:
     Path run(const BasicGraph& G, const State& start,
-             const vector<pair<int, int> >& goal_location,
+             const std::vector<std::pair<int, int> >& goal_location,
              ReservationTable& RT);
-	string getName() const { return "SIPP"; }
+	std::string getName() const { return "SIPP"; }
     SIPP(): SingleAgentSolver() {}
 
 private:
@@ -103,4 +107,3 @@ private:
     Path updatePath(const BasicGraph& G, const SIPPNode* goal);
 
 };
-

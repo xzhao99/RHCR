@@ -1,8 +1,8 @@
 #include"ID.h"
 
 
-bool ID::run(const vector<State>& starts,
-	const vector< vector<pair<int, int> > >& goal_locations,
+bool ID::run(const std::vector<State>& starts,
+	const std::vector< std::vector<std::pair<int, int> > >& goal_locations,
 	int time_limit)
 {
     this->starts = starts;
@@ -33,9 +33,9 @@ bool ID::run(const vector<State>& starts,
 
 bool ID::plan_paths_for_group(int group_id)
 {
-	vector<State> curr_starts;
-	vector< vector<pair<int, int> > > curr_goal_locations;
-	vector<int> curr_agents;
+	std::vector<State> curr_starts;
+	std::vector< std::vector<std::pair<int, int> > > curr_goal_locations;
+	std::vector<int> curr_agents;
 	for (int i = 0; i < num_of_agents; i++)
 	{
 		if (group_ids[i] == group_id)
@@ -138,8 +138,8 @@ bool ID::has_conflicts(const Path& path1, const Path& path2) const
 	}
 	else
 	{
-		int size1 = min(solver.window + 1, (int)path1.size());
-		int size2 = min(solver.window + 1, (int)path2.size());
+		int size1 = std::min(solver.window + 1, (int)path1.size());
+		int size2 = std::min(solver.window + 1, (int)path2.size());
 		for (int timestep = 0; timestep < size1; timestep++)
 		{
 			if (size2 <= timestep - k_robust)
@@ -147,7 +147,7 @@ bool ID::has_conflicts(const Path& path1, const Path& path2) const
 			else if (k_robust > 0)
 			{
 				int loc = path1[timestep].location;
-				for (int i = max(0, timestep - k_robust); i <= min(timestep + k_robust, size2 - 1); i++)
+				for (int i = std::max(0, timestep - k_robust); i <= std::min(timestep + k_robust, size2 - 1); i++)
 				{
 					if (loc == path2[i].location)
 					{
@@ -178,12 +178,12 @@ bool ID::has_conflicts(const Path& path1, const Path& path2) const
 }
 
 
-void ID::save_results(const string &fileName, const string &instanceName) const
+void ID::save_results(const std::string &fileName, const std::string &instanceName) const
 {
-	list<pair<int, int>> groups;
+	std::list<std::pair<int, int>> groups;
 	for (int id : group_ids)
 	{
-		list<pair<int, int>>::iterator group = groups.begin();
+		std::list<std::pair<int, int>>::iterator group = groups.begin();
 		for (; group != groups.end(); ++group)
 		{
 			if (group->first == id)
@@ -229,10 +229,10 @@ void ID::print_results() const
 	int largest_group = 0;
 	if (solution_found)
 	{
-		list<pair<int, int>> groups;
+		std::list<std::pair<int, int>> groups;
 		for (int id : group_ids)
 		{
-			list<pair<int, int>>::iterator group = groups.begin();
+			std::list<std::pair<int, int>>::iterator group = groups.begin();
 			for (; group != groups.end(); ++group)
 			{
 				if (group->first == id)

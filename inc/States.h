@@ -1,5 +1,9 @@
 #pragma once
 #include "common.h"
+#include <cstddef>
+#include <functional>
+#include <ostream>
+#include <vector>
 
 struct State
 {

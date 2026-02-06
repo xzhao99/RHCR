@@ -5,14 +5,14 @@
 LRAStar::LRAStar(const BasicGraph &G, SingleAgentSolver& path_planner): MAPFSolver(G, path_planner), num_expanded(0), num_generated(0) {}
 
 
-bool LRAStar::run(const vector<State>& starts, const vector< vector<pair<int, int> > >& goal_locations, int time_limit)
+bool LRAStar::run(const std::vector<State>& starts, const std::vector< std::vector<std::pair<int, int> > >& goal_locations, int time_limit)
 {
 	clock_t start = std::clock();
 	// plan individual paths
 	num_of_agents = starts.size();
 	num_expanded = 0;
 	num_generated = 0;
-	vector<Path> shortest_paths(num_of_agents);
+	std::vector<Path> shortest_paths(num_of_agents);
 	for (int i = 0; i < num_of_agents; i++)
 	{
 		runtime = (std::clock() - start) * 1.0 / CLOCKS_PER_SEC;
@@ -27,7 +27,7 @@ bool LRAStar::run(const vector<State>& starts, const vector< vector<pair<int, in
 }
 
 
-Path LRAStar::find_shortest_path(const State& start, const vector<pair<int, int> >& goal_locations)
+Path LRAStar::find_shortest_path(const State& start, const std::vector<std::pair<int, int> >& goal_locations)
 {
 	// The following is used to generate the hash value of a node
 	struct Hasher
@@ -53,7 +53,7 @@ Path LRAStar::find_shortest_path(const State& start, const vector<pair<int, int>
 
 	fibonacci_heap< StateTimeAStarNode*, compare<StateTimeAStarNode::compare_node> > open_list;
 	std::unordered_set< StateTimeAStarNode*, Hasher, EqNode> allNodes_table;
-	// generate start and add it to the OPEN list
+	// generate start and add it to the OPEN std::list
 	double h_val = path_planner.compute_h_value(G, start.location, 0, goal_locations);
 	auto root = new StateTimeAStarNode(start, 0, h_val, nullptr, 0);
 
@@ -154,11 +154,11 @@ Path LRAStar::find_shortest_path(const State& start, const vector<pair<int, int>
 
 
 
-void LRAStar::resolve_conflicts(const vector<Path>& input_paths)
+void LRAStar::resolve_conflicts(const std::vector<Path>& input_paths)
 {
     num_wait_commands = 0;
     num_of_agents = input_paths.size();
-    vector<int> path_pointers(num_of_agents, 1);
+    std::vector<int> path_pointers(num_of_agents, 1);
 	solution.clear();
 	solution.resize(num_of_agents);
     curr_locations.clear();
@@ -174,7 +174,7 @@ void LRAStar::resolve_conflicts(const vector<Path>& input_paths)
     for (int t = 1; t <= simulation_window; t++)
     {
         next_locations.clear();
-        vector<int> agents_list(num_of_agents);
+        std::vector<int> agents_list(num_of_agents);
         for (int k = 0; k < num_of_agents; k++)
         {
             agents_list[k] = k;
@@ -234,7 +234,7 @@ void LRAStar::resolve_conflicts(const vector<Path>& input_paths)
 
 
 void LRAStar::wait_command(int agent, int timestep,
-        vector<list<pair<int, int> >::const_iterator >& traj_pointers)
+        std::vector<std::list<std::pair<int, int> >::const_iterator >& traj_pointers)
 {
     int location = solution[agent][timestep - 1].location;
     if ((int)solution[agent].size() == timestep)
@@ -258,7 +258,7 @@ void LRAStar::wait_command(int agent, int timestep,
 
 
 void LRAStar::wait_command(int agent, int timestep,
-                           vector<int>& path_pointers)
+                           std::vector<int>& path_pointers)
 {
     int location = solution[agent][timestep - 1].location;
     if ((int)solution[agent].size() == timestep)
@@ -290,7 +290,7 @@ void LRAStar::print_results() const
               std::endl;
 }
 
-void LRAStar::save_results(const string &fileName, const string &instanceName) const
+void LRAStar::save_results(const std::string &fileName, const std::string &instanceName) const
 {
     std::ofstream stats;
     stats.open(fileName, std::ios::app);

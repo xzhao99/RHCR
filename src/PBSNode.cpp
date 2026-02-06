@@ -10,13 +10,13 @@ void PBSNode::clear()
 
 void PBSNode::print_priorities() const
 {
-    cout << "Priorities: ";
+    std::cout << "Priorities: ";
     for (auto row : priorities.G)
     {
-        cout << row.first << " < (";
+        std::cout << row.first << " < (";
         for (auto a : row.second)
             std::cout << a << ", ";
-        cout << "); ";
+        std::cout << "); ";
     }
-    cout << endl;
+    std::cout << std::endl;
 }

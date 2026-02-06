@@ -1,6 +1,7 @@
 #pragma once
 #include "BasicSystem.h"
 #include "SortingGraph.h"
+#include <unordered_map>
 
 
 class SortingSystem :
@@ -30,4 +31,3 @@ private:
     int assign_induct_station(int curr) const;
     int assign_eject_station() const;
 };
-

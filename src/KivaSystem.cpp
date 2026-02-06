@@ -26,7 +26,7 @@ void KivaSystem::initialize()
 		succ = load_locations();
 		if (!succ)
 		{
-			cout << "Randomly generating initial locations" << endl;
+			std::cout << "Randomly generating initial locations" << std::endl;
 			initialize_start_locations();
 			initialize_goal_locations();
 		}
@@ -97,9 +97,9 @@ void KivaSystem::update_goal_locations()
 				{
 					int removed_agent = it->second;
 					if (goal_locations[removed_agent].back().first != loc)
-						cout << "BUG" << endl;
+						std::cout << "BUG" << std::endl;
 					new_agents.remove(removed_agent); // another agent cannot move to its new goal location
-					cout << "Agent " << removed_agent << " has to wait for agent " << agent << " because of location " << loc << endl;
+					std::cout << "Agent " << removed_agent << " has to wait for agent " << agent << " because of location " << loc << std::endl;
 					held_locations[loc] = agent; // this agent has to keep holding this location
 					agent = removed_agent;
 					loc = paths[agent][timestep].location; // another agent's start location
@@ -119,16 +119,16 @@ void KivaSystem::update_goal_locations()
 				// so this agent has to keep holding its start location instead
 				int agent = k;
 				int loc = curr;
-				cout << "Agent " << agent << " has to wait for agent " << held_locations[goal_locations[k].back().first] << " because of location " <<
-					goal_locations[k].back().first << endl;
+				std::cout << "Agent " << agent << " has to wait for agent " << held_locations[goal_locations[k].back().first] << " because of location " <<
+					goal_locations[k].back().first << std::endl;
 				auto it = held_locations.find(loc);
 				while (it != held_locations.end()) // its start location has been held by another agent
 				{
 					int removed_agent = it->second;
 					if (goal_locations[removed_agent].back().first != loc)
-						cout << "BUG" << endl;
+						std::cout << "BUG" << std::endl;
 					new_agents.remove(removed_agent); // another agent cannot move to its new goal location
-					cout << "Agent " << removed_agent << " has to wait for agent " << agent << " because of location " << loc << endl;
+					std::cout << "Agent " << removed_agent << " has to wait for agent " << agent << " because of location " << loc << std::endl;
 					held_locations[loc] = agent; // this agent has to keep holding its start location
 					agent = removed_agent;
 					loc = paths[agent][timestep].location; // another agent's start location
@@ -161,10 +161,10 @@ void KivaSystem::update_goal_locations()
 			}
 			else
 			{
-				pair<int, int> goal; // The last goal location
+				std::pair<int, int> goal; // The last goal location
 				if (goal_locations[k].empty())
 				{
-					goal = make_pair(curr, 0);
+					goal = std::make_pair(curr, 0);
 				}
 				else
 				{
@@ -175,12 +175,12 @@ void KivaSystem::update_goal_locations()
 					// The agent might finish its tasks during the next planning horizon
 				{
 					// assign a new task
-					pair<int, int> next;
+					std::pair<int, int> next;
 					if (G.types[goal.first] == "Endpoint")
 					{
 						do
 						{
-							next = make_pair(G.endpoints[rand() % (int)G.endpoints.size()], 0);
+							next = std::make_pair(G.endpoints[rand() % (int)G.endpoints.size()], 0);
 						} while (next == goal);
 					}
 					else
@@ -231,7 +231,7 @@ void KivaSystem::simulate(int simulation_time)
 
 		if (congested())
 		{
-			cout << "***** Too many traffic jams ***" << endl;
+			std::cout << "***** Too many traffic jams ***" << std::endl;
 			break;
 		}
 	}

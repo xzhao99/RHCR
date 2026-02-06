@@ -23,9 +23,9 @@ Path StateTimeAStar::updatePath(const StateTimeAStarNode* goal)
 }
 
 
-list<pair<int, int> > StateTimeAStar::updateTrajectory(const StateTimeAStarNode* goal)
+std::list<std::pair<int, int> > StateTimeAStar::updateTrajectory(const StateTimeAStarNode* goal)
 {
-    list<pair<int, int> > trajectory;
+    std::list<std::pair<int, int> > trajectory;
     path_cost = goal->getFVal();
     const StateTimeAStarNode* curr = goal;
     while (curr != nullptr)
@@ -39,10 +39,10 @@ list<pair<int, int> > StateTimeAStar::updateTrajectory(const StateTimeAStarNode*
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// return true if a path found (and updates vector<int> path) or false if no path exists
+// return true if a path found (and updates std::vector<int> path) or false if no path exists
 // after max_timestep, switch from time-space A* search to normal A* search
 Path StateTimeAStar::run(const BasicGraph& G, const State& start, 
-	const vector<pair<int, int> >& goal_location, ReservationTable& rt)
+	const std::vector<std::pair<int, int> >& goal_location, ReservationTable& rt)
 {
     num_expanded = 0;
     num_generated = 0;
@@ -52,13 +52,13 @@ Path StateTimeAStar::run(const BasicGraph& G, const State& start,
 	double h_val = compute_h_value(G, start.location, 0, goal_location);
 	if (h_val > INT_MAX)
 	{
-		cout << "The start and goal locations are disconnected!" << endl;
+		std::cout << "The start and goal locations are disconnected!" << std::endl;
 		return Path();
 	}
     if (rt.isConstrained(start.location, start.location, 0))
         return Path();
 
-	// generate root and add it to the OPEN list
+	// generate root and add it to the OPEN std::list
 	StateTimeAStarNode* root;
     root = new StateTimeAStarNode(start, 0, h_val, nullptr, 0);
     num_generated++;
@@ -129,7 +129,7 @@ Path StateTimeAStar::run(const BasicGraph& G, const State& start,
                     StateTimeAStarNode* existing_next = *it;
 
                     if (existing_next->in_openlist)
-                    {  // if its in the open list
+                    {  // if its in the open std::list
                         if (existing_next->getFVal() > next_g_val + next_h_val ||
                             (existing_next->getFVal() == next_g_val + next_h_val && existing_next->conflicts > next_conflicts))
                         {
@@ -163,7 +163,7 @@ Path StateTimeAStar::run(const BasicGraph& G, const State& start,
                         }
                     }
                     else
-                    {  // if its in the closed list (reopen)
+                    {  // if its in the closed std::list (reopen)
                         if (existing_next->getFVal() > next_g_val + next_h_val ||
                             (existing_next->getFVal() == next_g_val + next_h_val && existing_next->conflicts > next_conflicts))
                         {
@@ -178,13 +178,13 @@ Path StateTimeAStar::run(const BasicGraph& G, const State& start,
                             if (existing_next->getFVal() <= lower_bound)
                                 existing_next->focal_handle = focal_list.push(existing_next);
                         }
-                    }  // end update a node in closed list
+                    }  // end update a node in closed std::list
                     delete(next);  // not needed anymore -- we already generated it before
                 }  // end update an existing node
             }// end if case forthe move is legal
         }  // end for loop that generates successors
 
-        // update FOCAL if min f-val increased
+        // update FOCAL if std::min f-val increased
         if (open_list.empty())  // in case OPEN is empty, no path found
         {
             // This is correct only when k_robust <= 1. Otherwise, agents might not be able to
@@ -236,16 +236,16 @@ Path StateTimeAStar::run(const BasicGraph& G, const State& start,
 
 void StateTimeAStar::findTrajectory(const BasicGraph& G,
                      const State& start,
-                     const vector<pair<int, int> >& goal_locations,
+                     const std::vector<std::pair<int, int> >& goal_locations,
                      const std::unordered_map<int, double>& travel_times,
-                     list<pair<int, int> >& trajectory)
+                     std::list<std::pair<int, int> >& trajectory)
 {
     num_expanded = 0;
     num_generated = 0;
     open_list.clear();
     releaseClosedListNodes();
 
-    // generate start and add it to the OPEN list
+    // generate start and add it to the OPEN std::list
     double h_val = compute_h_value(G, start.location, 0, goal_locations);
     auto root = new StateTimeAStarNode(start, 0, h_val, nullptr, 0);
 

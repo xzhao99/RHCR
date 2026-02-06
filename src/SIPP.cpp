@@ -52,10 +52,10 @@ Path SIPP::updatePath(const BasicGraph& G, const SIPPNode* goal)
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// return true if a path found (and updates vector<int> path) or false if no path exists
+// return true if a path found (and updates std::vector<int> path) or false if no path exists
 // after max_timestep, switch from time-space A* search to normal A* search
 Path SIPP::run(const BasicGraph& G, const State& start,
-               const vector<pair<int, int> >& goal_location,
+               const std::vector<std::pair<int, int> >& goal_location,
                ReservationTable& rt)
 {
     num_expanded = 0;
@@ -65,7 +65,7 @@ Path SIPP::run(const BasicGraph& G, const State& start,
 	double h_val = compute_h_value(G, start.location, 0, goal_location);
 	if (h_val > INT_MAX)
 	{
-		cout << "The start and goal locations are disconnected!" << endl;
+		std::cout << "The start and goal locations are disconnected!" << std::endl;
 		return Path();
 	}
     Interval interval = rt.getFirstSafeInterval(start.location);
@@ -86,7 +86,7 @@ Path SIPP::run(const BasicGraph& G, const State& start,
         // This is correct only when k_robust <= 1. Otherwise, agents might not be able to
         // wait at its start locations due to initial constraints caused by the previous actions
         // of other agents.
-        Interval interval = make_tuple(0, INTERVAL_MAX, 0);
+        Interval interval = std::make_tuple(0, INTERVAL_MAX, 0);
         auto node = new SIPPNode(start, 0, h_val, interval, nullptr, 0);
         num_generated++;
         node->open_handle = open_list.push(node);
@@ -178,7 +178,7 @@ Path SIPP::run(const BasicGraph& G, const State& start,
             }
         }
 
-        // update FOCAL if min f-val increased
+        // update FOCAL if std::min f-val increased
         if (open_list.empty())  // in case OPEN is empty, no path found
         {
             if(prioritize_start) // the agent has the highest priority at its start location
@@ -187,7 +187,7 @@ Path SIPP::run(const BasicGraph& G, const State& start,
                 // wait at its start locations due to initial constraints caused by the previous actions
                 // of other agents.
                 Interval interval = rt.getFirstSafeInterval(start.location);
-                Interval interval2 = make_tuple(std::get<1>(interval), INTERVAL_MAX, 0);
+                Interval interval2 = std::make_tuple(std::get<1>(interval), INTERVAL_MAX, 0);
                 double h_val = compute_h_value(G, start.location, 0, goal_location);
                 auto node2 = new SIPPNode(start, 0, h_val, interval2, nullptr, 0);
                 num_generated++;
@@ -285,7 +285,7 @@ Path SIPP::run(const BasicGraph& G, const State& start,
     double existing_f_val = existing_next->getFVal();
 
     if (existing_next->in_openlist)
-    {  // if its in the open list
+    {  // if its in the open std::list
         if (existing_f_val > g_val + h_val ||
             (existing_f_val == g_val + h_val && existing_next->conflicts > conflicts))
         {
@@ -320,7 +320,7 @@ Path SIPP::run(const BasicGraph& G, const State& start,
         }
     }
     else
-    {  // if its in the closed list (reopen)
+    {  // if its in the closed std::list (reopen)
         if (existing_f_val > g_val + h_val ||
             (existing_f_val == g_val + h_val && existing_next->conflicts > conflicts))
         {
@@ -336,7 +336,7 @@ Path SIPP::run(const BasicGraph& G, const State& start,
             if (existing_f_val <= focal_bound)
                 existing_next->focal_handle = focal_list.push(existing_next);
         }
-    }  // end update a node in closed list
+    }  // end update a node in closed std::list
 
     delete(next);  // not needed anymore -- we already generated it before
 }*/
@@ -345,7 +345,7 @@ Path SIPP::run(const BasicGraph& G, const State& start,
 void SIPP::generate_node(const Interval& interval, SIPPNode* curr, const BasicGraph& G,
         int location, int min_timestep, int orientation, double h_val)
 {
-    int timestep  = max(std::get<0>(interval), min_timestep);
+    int timestep  = std::max(std::get<0>(interval), min_timestep);
     int wait_time = timestep - curr->state.timestep - 1; // inlcude rotate time
     double g_val = curr->g_val + wait_time * G.get_weight(curr->state.location, curr->state.location)
                    + G.get_weight(curr->state.location, location);
@@ -390,7 +390,7 @@ void SIPP::generate_node(const Interval& interval, SIPPNode* curr, const BasicGr
     double existing_f_val = existing_next->getFVal();
 
     if (existing_next->in_openlist)
-    {  // if its in the open list
+    {  // if its in the open std::list
         if (existing_f_val > g_val + h_val ||
             (existing_f_val == g_val + h_val && existing_next->conflicts > conflicts))
         {
@@ -425,7 +425,7 @@ void SIPP::generate_node(const Interval& interval, SIPPNode* curr, const BasicGr
         }
     }
     else
-    {  // if its in the closed list (reopen)
+    {  // if its in the closed std::list (reopen)
         if (existing_f_val > g_val + h_val ||
             (existing_f_val == g_val + h_val && existing_next->conflicts > conflicts))
         {
@@ -441,7 +441,7 @@ void SIPP::generate_node(const Interval& interval, SIPPNode* curr, const BasicGr
             if (existing_f_val <= focal_bound)
                 existing_next->focal_handle = focal_list.push(existing_next);
         }
-    }  // end update a node in closed list
+    }  // end update a node in closed std::list
 
     delete(next);  // not needed anymore -- we already generated it before
 }

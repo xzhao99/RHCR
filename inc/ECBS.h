@@ -1,7 +1,14 @@
 #pragma once
 #include "ECBSNode.h"
 #include "MAPFSolver.h"
+#include <cstdint>
 #include <ctime>
+#include <list>
+#include <memory>
+#include <string>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 class ECBS :
 	public MAPFSolver
@@ -10,7 +17,7 @@ public:
 
     bool disjoint_splitting;
 
-	string potential_function;
+	std::string potential_function;
 	double potential_threshold;
 	double suboptimal_bound;
 
@@ -24,8 +31,8 @@ public:
 
 
     // Runs the algorithm until the problem is solved or time is exhausted
-    bool run(const vector<State>& starts,
-             const vector< vector<pair<int, int> > >& goal_locations, 
+    bool run(const std::vector<State>& starts,
+             const std::vector< std::vector<std::pair<int, int> > >& goal_locations, 
              int time_limit);
 
 
@@ -39,7 +46,7 @@ public:
     void save_search_tree(const std::string &fileName) const;
 	void save_constraints_in_goal_node(const std::string &fileName) const {}
 
-	string get_name() const {return "ECBS"; }
+	std::string get_name() const {return "ECBS"; }
     void clear();
 
 private:
@@ -47,12 +54,12 @@ private:
     typedef boost::heap::fibonacci_heap< ECBSNode*, boost::heap::compare<ECBSNode::secondary_compare_node> > heap_focal_t;
     heap_open_t open_list;
     heap_focal_t focal_list;
-    list<ECBSNode*> allNodes_table;
+    std::list<ECBSNode*> allNodes_table;
 
     ECBSNode* best_node;
 
-    // vector<State> starts;
-    // vector< vector<int> > goal_locations;
+    // std::vector<State> starts;
+    // std::vector< std::vector<int> > goal_locations;
     std::vector< Path* > paths;
     std::vector<double> path_min_costs;
     std::vector<double> path_costs;
@@ -80,12 +87,12 @@ private:
     // conflicts
     void remove_conflicts(std::list<std::shared_ptr<Conflict> >& conflicts, int excluded_agent) const;
     void find_conflicts(const std::list<std::shared_ptr<Conflict> >& old_conflicts,
-                        std::list<std::shared_ptr<Conflict> >& new_conflicts, const list<int>& new_agents) const;
+                        std::list<std::shared_ptr<Conflict> >& new_conflicts, const std::list<int>& new_agents) const;
     void find_conflicts(int start_time, std::list<std::shared_ptr<Conflict> >& conflicts, int a1, int a2) const;
     void find_conflicts(std::list<std::shared_ptr<Conflict> >& new_conflicts, int new_agent) const;
     void choose_conflict(ECBSNode &parent) const;
     void copy_conflicts(const std::list<std::shared_ptr<Conflict> >& conflicts,
-                        std::list<std::shared_ptr<Conflict> >& copy, const list<int>& new_agents) const;
+                        std::list<std::shared_ptr<Conflict> >& copy, const std::list<int>& new_agents) const;
 
     //double get_path_cost(const Path& path) const;
 
@@ -105,6 +112,6 @@ private:
 
     // validate
     bool validate_solution() const;
-    bool validate_path(const Path& path, const list<Constraint>& constraints) const;
+    bool validate_path(const Path& path, const std::list<Constraint>& constraints) const;
 
 };

@@ -1,6 +1,6 @@
 #include "BeeSystem.h"
 #include <boost/tokenizer.hpp>
-
+#include <iostream>
 
 BeeSystem::BeeSystem(const BeeGraph& G, MAPFSolver& solver) : BasicSystem(G, solver), G(G) {}
 
@@ -9,11 +9,11 @@ BeeSystem::~BeeSystem()
 {
 }
 
-bool BeeSystem::load_task_assignments(string fname)
+bool BeeSystem::load_task_assignments(std::string fname)
 {
 	clock_t t = clock();
 	using namespace boost;
-	string line;
+	std::string line;
 	std::ifstream myfile((fname).c_str());
 	if (!myfile.is_open())
 	{
@@ -97,9 +97,9 @@ void BeeSystem::update_goal_locations()
 {
 	for (int k = 0; k < num_of_drives; k++)
 	{
-		pair<int, int> curr(paths[k][timestep].location, timestep); // current location
+		std::pair<int, int> curr(paths[k][timestep].location, timestep); // current location
 
-		pair<int, int> goal; // The last goal location
+		std::pair<int, int> goal; // The last goal location
 		if (goal_locations[k].empty())
 		{
 			goal = curr;
@@ -108,7 +108,7 @@ void BeeSystem::update_goal_locations()
 		{
 			goal = goal_locations[k].back();
 		}
-		int min_timesteps = max(G.get_Manhattan_distance(curr.first, goal.first), // cannot use h values, because graph edges may have weights
+		int min_timesteps = std::max(G.get_Manhattan_distance(curr.first, goal.first), // cannot use h values, because graph edges may have weights
 			goal.second - timestep); 
 		while (min_timesteps <= simulation_window)
 			// The agent might finish its tasks during the next planning horizon
@@ -127,7 +127,7 @@ void BeeSystem::update_goal_locations()
 			task_sequences[k].pop_front();
 			goal_locations[k].emplace_back(next);
 			min_timesteps += G.get_Manhattan_distance(next.first, goal.first); 
-			min_timesteps = max(min_timesteps, goal.second - timestep);
+			min_timesteps = std::max(min_timesteps, goal.second - timestep);
 			goal = next;
 		}
 		if (goal_locations[k].empty())
@@ -208,7 +208,7 @@ void BeeSystem::simulate()
 	if (screen)
 	{
 		std::cout << std::endl << "Done!" << std::endl;
-		cout << num_of_tasks << " tasks have been completed" << endl;
+		std::cout << num_of_tasks << " tasks have been completed" << std::endl;
 	}
 	save_results();
 }
@@ -252,9 +252,9 @@ int BeeSystem::get_num_of_remaining_tasks() const
 	return remaining_tasks;
 }
 
-list<int> BeeSystem::get_missed_flower_ids() const
+std::list<int> BeeSystem::get_missed_flower_ids() const
 {
-	list<int> ids;
+	std::list<int> ids;
 	for (const auto& tasks : task_sequences) // unfinished tasks
 	{
 		for (const auto& task : tasks)
@@ -388,14 +388,14 @@ int BeeSystem::get_objective() const
 	return path_cost + task_cost;
 }
 
-void solve_VRP_by_LKH3(string fname)
+void solve_VRP_by_LKH3(std::string fname)
 {
 	clock_t t = clock();
 	std::size_t pos = fname.rfind('.');      // position of the file extension
-	string input_file = fname.substr(0, pos);     // get the name without extension
+	std::string input_file = fname.substr(0, pos);     // get the name without extension
 	std::ofstream output;
 	output.open(input_file + "_LKH_input.txt", std::ios::out);
-	output << "NAME: BEE" << endl <<
+	output << "NAME: BEE" << std::endl <<
 						"TYPE: ";
 	output.close();
 }

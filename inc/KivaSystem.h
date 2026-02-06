@@ -1,6 +1,7 @@
 #pragma once
 #include "BasicSystem.h"
 #include "KivaGraph.h"
+#include <unordered_set>
 
 class KivaSystem :
 	public BasicSystem
@@ -21,4 +22,3 @@ private:
 	void initialize_goal_locations();
 	void update_goal_locations();
 };
-

@@ -1,6 +1,6 @@
 #include "PriorityGraph.h"
 #include <boost/graph/copy.hpp>
-
+#include <fstream>
 
 void PriorityGraph::clear()
 {
@@ -12,7 +12,7 @@ void PriorityGraph::copy(const PriorityGraph& other)
     this->G = other.G;
 }
 
-void PriorityGraph::copy(const PriorityGraph& other, const vector<bool>& excluded_nodes)
+void PriorityGraph::copy(const PriorityGraph& other, const std::vector<bool>& excluded_nodes)
 {
     for (auto row : other.G)
     {
@@ -117,7 +117,7 @@ void PriorityGraph::save_as_digraph(std::string fname) const
 }
 
 
-void PriorityGraph::update_number_of_lower_nodes(vector<int>& lower_nodes, int node) const
+void PriorityGraph::update_number_of_lower_nodes(std::vector<int>& lower_nodes, int node) const
 {
     if (lower_nodes[node] >= 0)
         return;

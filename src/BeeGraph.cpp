@@ -1,8 +1,11 @@
 #include "BeeGraph.h"
 #include <boost/tokenizer.hpp>
 #include <sstream>      // std::istringstream
+#include <iostream>
+#include <chrono>
 
-bool BeeGraph::load_map(string fname)
+
+bool BeeGraph::load_map(std::string fname)
 {
 	using namespace boost;
 	// read parameters
@@ -15,7 +18,7 @@ bool BeeGraph::load_map(string fname)
 	clock_t t = std::clock();
 	std::size_t pos = fname.rfind('.');      // position of the file extension
 	map_name = fname.substr(0, pos);     // get the name without extension
-	string temp;
+	std::string temp;
 	myfile >> temp >> this->rows; // size
 	this->cols = this->rows;
 	move[0] = 1;
@@ -92,7 +95,7 @@ bool BeeGraph::load_map(string fname)
 	myfile.close();
 
 	// read time windows
-	string windowfname;
+	std::string windowfname;
 	pos = map_name.rfind("parameter");
 	windowfname = map_name.replace(pos, 9, "D_time_windows");
 	windowfname = windowfname + ".csv";
@@ -120,10 +123,10 @@ bool BeeGraph::load_map(string fname)
 }
 
 
-bool BeeGraph::load_Nathan_map(string fname)
+bool BeeGraph::load_Nathan_map(std::string fname)
 {
 	using namespace boost;
-	string line;
+	std::string line;
 	std::ifstream myfile((fname).c_str());
 	if (!myfile.is_open())
 	{
@@ -196,7 +199,7 @@ bool BeeGraph::load_Nathan_map(string fname)
 }
 
 
-void BeeGraph::preprocessing(string fname, bool consider_rotation)
+void BeeGraph::preprocessing(std::string fname, bool consider_rotation)
 {
 	// std::cout << "*** PreProcessing map ***" << std::endl;
 	clock_t t = std::clock();
@@ -207,7 +210,7 @@ void BeeGraph::preprocessing(string fname, bool consider_rotation)
 	{
 		using namespace boost;
 		char_separator<char> sep(" ");
-		string line;
+		std::string line;
 		int id, i;
 		char temp;
 		while (getline(myfile, line))

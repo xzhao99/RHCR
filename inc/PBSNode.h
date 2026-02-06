@@ -2,11 +2,16 @@
 #include "common.h"
 #include "PriorityGraph.h"
 #include "States.h"
+#include <climits>
+#include <cstddef>
+#include <cstdint>
+#include <list>
+#include <utility>
 
 class PBSNode
 {
 public:
-	// the following is used to comapre nodes in the OPEN list
+	// the following is used to comapre nodes in the OPEN std::list
 	struct compare_node 
 	{
 		bool operator()(const PBSNode* n1, const PBSNode* n2) const
@@ -17,9 +22,9 @@ public:
             }
 			return n1->f_val >= n2->f_val;
 		}
-	};  // used by OPEN to compare nodes by sum_min_f_vals (top of the heap has min sum_min_f_vals)
+	};  // used by OPEN to compare nodes by sum_min_f_vals (top of the heap has std::min sum_min_f_vals)
 
-	// the following is used to comapre nodes in the FOCAL list
+	// the following is used to comapre nodes in the FOCAL std::list
 	// struct secondary_compare_node
 	// {
 	// 	bool operator()(const PBSNode* n1, const PBSNode* n2) const
@@ -33,7 +38,7 @@ public:
 			}*/
 	// 		return n1->num_of_collisions >= n2->num_of_collisions;
 	// 	}
-	// };  // used by FOCAL to compare nodes by num_of_collisions (top of the heap has min h-val)
+	// };  // used by FOCAL to compare nodes by num_of_collisions (top of the heap has std::min h-val)
 
 	typedef fibonacci_heap< PBSNode*, compare<PBSNode::compare_node> >::
 	    handle_type open_handle_t;
@@ -52,7 +57,7 @@ public:
 	PBSNode* parent;
 
 
-    list< pair<int, Path> > paths; // <agent_id, path>
+    std::list< std::pair<int, Path> > paths; // <agent_id, path>
     std::pair<int, int> priority; // a1 < a2
 
     PriorityGraph priorities;
@@ -79,4 +84,3 @@ public:
 
 private:
 };
-

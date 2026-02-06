@@ -1,5 +1,11 @@
 #pragma once
 #include "MAPFSolver.h"
+#include <cstdint>
+#include <list>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 
 class LRAStar: public MAPFSolver
@@ -12,7 +18,7 @@ public:
     uint64_t num_generated;
 
     // Runs the algorithm until the problem is solved or time is exhausted
-    void resolve_conflicts(const vector<Path>& paths); // current implementation can only deal with k_robust <= 1
+    void resolve_conflicts(const std::vector<Path>& paths); // current implementation can only deal with k_robust <= 1
     // TODO: implement for larger k_robust
 
 
@@ -22,23 +28,22 @@ public:
 
     LRAStar(const BasicGraph& G, SingleAgentSolver& path_planner);
 
-	bool run(const vector<State>& starts,
-		const vector< vector<pair<int, int> > >& goal_locations,
+	bool run(const std::vector<State>& starts,
+		const std::vector< std::vector<std::pair<int, int> > >& goal_locations,
 		int time_limit);
-	string get_name() const {return "LRA"; }
+	std::string get_name() const {return "LRA"; }
 	void clear() {}
 
 private:
     StateTimeAStar astar; // TODO: delete this
     std::unordered_map<int, int> curr_locations; // key = location, value = agent_id
     std::unordered_map<int, int> next_locations; // key = location, value = agent_id
-    // vector<list<pair<int, int> > > trajectories;
+    // std::vector<std::list<std::pair<int, int> > > trajectories;
 
     void print_results() const;
     void wait_command(int agent, int timestep,
-                      vector<list<pair<int, int> >::const_iterator >& traj_pointers);
-    void wait_command(int agent, int timestep, vector<int>& path_pointers);
+                      std::vector<std::list<std::pair<int, int> >::const_iterator >& traj_pointers);
+    void wait_command(int agent, int timestep, std::vector<int>& path_pointers);
 
-	Path find_shortest_path(const State& start, const vector<pair<int, int> >& goal_location);
+	Path find_shortest_path(const State& start, const std::vector<std::pair<int, int> >& goal_location);
 };
-

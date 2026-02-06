@@ -101,7 +101,7 @@ void SortingGrid::preprocessing(bool consider_rotation)
 		{
 			if (types[h.first] != "Induct" && types[h.first] != "Eject")
 			{
-				cout << "The heuristic table does not match the map!" << endl;
+				std::cout << "The heuristic table does not match the map!" << std::endl;
 				exit(-1);
 			}
 		}

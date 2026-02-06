@@ -2,6 +2,13 @@
 #include "PBSNode.h"
 #include "SIPP.h"
 #include <ctime>
+#include <list>
+#include <string>
+#include <tuple>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 // Base class for MAPF solvers
 class MAPFSolver
@@ -18,21 +25,21 @@ public:
 	double solution_cost;
 	double avg_path_length;
 	double min_sum_of_costs;
-    vector<Path> solution;
+    std::vector<Path> solution;
 
 	// initial data
 	ReservationTable initial_rt;
-	vector<Path> initial_paths;
-    list< tuple<int, int, int> > initial_constraints; // <agent, location, timestep>:
+	std::vector<Path> initial_paths;
+    std::list< std::tuple<int, int, int> > initial_constraints; // <agent, location, timestep>:
     // only this agent can stay in this location before this timestep.
-	list<const Path*> initial_soft_path_constraints; // the paths that all agents try to avoid
+	std::list<const Path*> initial_soft_path_constraints; // the paths that all agents try to avoid
 	std::unordered_map<int, double> travel_times;
 
 
 	SingleAgentSolver& path_planner;
 	// Runs the algorithm until the problem is solved or time is exhausted 
-    virtual bool run(const vector<State>& starts,
-            const vector< vector<pair<int, int> > >& goal_locations,  // an ordered list of pairs of <location, release time>
+    virtual bool run(const std::vector<State>& starts,
+            const std::vector< std::vector<std::pair<int, int> > >& goal_locations,  // an ordered std::list of pairs of <location, release time>
             int time_limit) = 0;
 
 
@@ -45,11 +52,11 @@ public:
 	virtual void save_constraints_in_goal_node(const std::string &fileName) const = 0;
 	virtual void clear() = 0;
 
-	virtual string get_name() const = 0;
+	virtual std::string get_name() const = 0;
 
     const BasicGraph& G;
-    vector<State> starts;
-    vector< vector<pair<int, int> > > goal_locations;
+    std::vector<State> starts;
+    std::vector< std::vector<std::pair<int, int> > > goal_locations;
     int num_of_agents;
 	int time_limit;
 
@@ -57,8 +64,7 @@ public:
     bool validate_solution();
     void print_solution() const;
 protected:
-    vector<vector<bool> > cat; // conflict avoidance table
-    vector<std::unordered_set<std::pair<int, int>, pair_hash> > constraint_table;
+    std::vector<std::vector<bool> > cat; // conflict avoidance table
+    std::vector<std::unordered_set<std::pair<int, int>, pair_hash> > constraint_table;
     ReservationTable rt;
 };
-

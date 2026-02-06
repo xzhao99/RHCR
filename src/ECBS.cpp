@@ -1,4 +1,5 @@
 #include "ECBS.h"
+#include <iostream>
 
 void ECBS::clear()
 {
@@ -26,7 +27,7 @@ void ECBS::clear()
 // also, do the same for ll_min_f_vals and paths_costs (since its already "on the way").
 void ECBS::update_paths(ECBSNode* curr)
 {
-    vector<bool> updated(num_of_agents, false);  // initialized for false
+    std::vector<bool> updated(num_of_agents, false);  // initialized for false
     while (curr != nullptr)
     {
         for (auto p = curr->paths.begin(); p != curr->paths.end(); ++p)
@@ -63,7 +64,7 @@ void ECBS::update_paths(ECBSNode* curr)
         curr = curr->parent;
     }
 
-    // initialize a constraint vector of length max_timestep+1. Each entry is an empty list< pair<int,int> > (loc1,loc2)
+    // initialize a constraint std::vector of length max_timestep+1. Each entry is an empty std::list< std::pair<int,int> > (loc1,loc2)
     constraint_table.clear();
     constraint_table.resize(max_timestep + 1);
 
@@ -90,7 +91,7 @@ void ECBS::update_paths(ECBSNode* curr)
 // used for copying conflicts from the parent node to the child nodes
 void ECBS::copy_conflicts(const std::list<std::shared_ptr<Conflict>>& conflicts,
                             std::list<std::shared_ptr<Conflict> >& copy,
-                            const list<int>& excluded_agents) const
+                            const std::list<int>& excluded_agents) const
 {
     for (auto it = conflicts.begin(); it != conflicts.end(); ++it)
     {
@@ -155,8 +156,8 @@ void ECBS::find_conflicts(int start_time, std::list<std::shared_ptr<Conflict> >&
 	}
 	else
 	{
-		int size1 = min(window + 1, (int)paths[a1]->size());
-		int size2 = min(window + 1, (int)paths[a2]->size());
+		int size1 = std::min(window + 1, (int)paths[a1]->size());
+		int size2 = std::min(window + 1, (int)paths[a2]->size());
 		for (int timestep = start_time; timestep < size1; timestep++)
 		{
 			if (size2 <= timestep - k_robust)
@@ -164,11 +165,11 @@ void ECBS::find_conflicts(int start_time, std::list<std::shared_ptr<Conflict> >&
 			else if (k_robust > 0)
 			{
 				int loc = paths[a1]->at(timestep).location;
-				for (int i = max(0, timestep - k_robust); i <= min(timestep + k_robust, size2 - 1); i++)
+				for (int i = std::max(0, timestep - k_robust); i <= std::min(timestep + k_robust, size2 - 1); i++)
 				{
 					if (loc == paths[a2]->at(i).location)
 					{
-						conflicts.emplace_back(new Conflict(a1, a2, loc, -1, min(i, timestep))); // k-robust vertex conflict
+						conflicts.emplace_back(new Conflict(a1, a2, loc, -1, std::min(i, timestep))); // k-robust vertex conflict
 						return;
 					}
 				}
@@ -223,7 +224,7 @@ void ECBS::find_conflicts(std::list<std::shared_ptr<Conflict> >& new_conflicts, 
 
 void ECBS::find_conflicts(const std::list<std::shared_ptr<Conflict> >& old_conflicts,
                             std::list<std::shared_ptr<Conflict> >& new_conflicts,
-                            const list<int>& new_agents) const
+                            const std::list<int>& new_agents) const
 {
     // Copy from parent
     copy_conflicts(old_conflicts, new_conflicts, new_agents);
@@ -283,7 +284,7 @@ bool ECBS::find_path(ECBSNode* node, int agent)
     Path path;
 
     // extract all constraints on the agent
-    list<Constraint> constraints;
+    std::list<Constraint> constraints;
     ECBSNode* curr = node;
     while (curr != dummy_start)
     {
@@ -297,8 +298,8 @@ bool ECBS::find_path(ECBSNode* node, int agent)
                 {
                     int loc = std::get<1>(c);
                     int time = std::get<3>(c);
-                    int t_min = max(0, time - k_robust);
-                    int t_max = min(window, time + k_robust);
+                    int t_min = std::max(0, time - k_robust);
+                    int t_max = std::min(window, time + k_robust);
                     for (int t = t_min; t <= t_max; t++)
                     {
                         constraints.emplace_back(agent, loc, -1, t, false);
@@ -328,12 +329,12 @@ bool ECBS::find_path(ECBSNode* node, int agent)
     }
     else if (screen == 2 && !validate_path(path, constraints))
     {
-        std::cout << "The resulting path violates its constraints!" << endl;
-        cout << path << endl;
+        std::cout << "The resulting path violates its constraints!" << std::endl;
+        std::cout << path << std::endl;
         for (auto constraint : constraints)
-            cout << constraint << endl;
+            std::cout << constraint << std::endl;
 		rt.copy(initial_rt);
-        rt.build(paths, list< tuple<int, int, int> >(), constraints, agent);
+        rt.build(paths, std::list< std::tuple<int, int, int> >(), constraints, agent);
         path = path_planner.run(G, starts[agent], goal_locations[agent], rt);
         rt.clear();
         exit(-1);
@@ -354,7 +355,7 @@ bool ECBS::find_path(ECBSNode* node, int agent)
 }
 
 
-bool ECBS::validate_path(const Path& path, const list<Constraint>& constraints) const
+bool ECBS::validate_path(const Path& path, const std::list<Constraint>& constraints) const
 {
     int a, v1, v2, t;
     bool positive;
@@ -383,18 +384,18 @@ bool ECBS::validate_path(const Path& path, const list<Constraint>& constraints) 
 
 bool ECBS::generate_child(ECBSNode* node, ECBSNode* parent)
 {
-    list<int> to_replan;
+    std::list<int> to_replan;
     int agent, v1, v2, time;
     bool positive;
     std::tie(agent, v1, v2, time, positive) = node->constraints.front();
     if (positive) // positive vertex constraint
     {
-        int t_min = max(0, time - k_robust);
+        int t_min = std::max(0, time - k_robust);
         for (int i = 0; i < num_of_agents; i++)
         {
             if (i == agent)
                 continue;
-            int t_max = min(min(window, time + k_robust), (int)paths[i]->size() - 1);
+            int t_max = std::min(std::min(window, time + k_robust), (int)paths[i]->size() - 1);
             for (int t = t_min; t <= t_max; t++)
             {
                 if (paths[i]->at(t).location == v1)
@@ -444,7 +445,7 @@ bool ECBS::generate_root_node()
     for (int i = 0; i < num_of_agents; i++)
     {
 		rt.copy(initial_rt);
-        rt.build(paths, initial_constraints, list<Constraint>(), i);
+        rt.build(paths, initial_constraints, std::list<Constraint>(), i);
         Path path = path_planner.run(G, starts[i], goal_locations[i], rt);
         /*if (path.empty() && hold_endpoints && goal_locations[i].size() == 1)
         {
@@ -514,12 +515,12 @@ ECBSNode* ECBS::pop_node()
 
 
 bool ECBS::run(const std::vector<State>& starts,
-                     const std::vector< vector<pair<int, int> > >& goal_locations,
+                     const std::vector< std::vector<std::pair<int, int> > >& goal_locations,
                      int time_limit)
 {
     clear();
 
-    // set timer
+    // std::set timer
     start = std::clock();
 
     this->starts = starts;
@@ -577,7 +578,7 @@ bool ECBS::run(const std::vector<State>& starts,
 				for (int i = 0; i < num_of_agents; i++)
 				{
 					soc += path_planner.compute_h_value(G, paths[i]->front().location, 0, goal_locations[i]);
-					soc -= max((int)paths[i]->size() - window, 0);
+					soc -= std::max((int)paths[i]->size() - window, 0);
 				}
 				if (soc <= 0)
 				{
@@ -595,7 +596,7 @@ bool ECBS::run(const std::vector<State>& starts,
 				int count = 0;
 				for (int i = 0; i < num_of_agents; i++)
 				{
-					if (path_planner.compute_h_value(G, paths[i]->front().location, 0, goal_locations[i]) <= max((int)paths[i]->size() - window, 0))
+					if (path_planner.compute_h_value(G, paths[i]->front().location, 0, goal_locations[i]) <= std::max((int)paths[i]->size() - window, 0))
 						count++;
 				}
 				if (count > num_of_agents * potential_threshold)
@@ -636,7 +637,7 @@ bool ECBS::run(const std::vector<State>& starts,
             n[i] = new ECBSNode(curr);
         resolve_conflict(*curr->conflict, n[0], n[1]);
 
-        vector<Path*> copy(paths);
+        std::vector<Path*> copy(paths);
         for (int i = 0; i < 2; i++)
         {
             bool sol = generate_child(n[i], curr);
@@ -691,7 +692,7 @@ void ECBS::resolve_conflict(const Conflict& conflict, ECBSNode* n1, ECBSNode* n2
         {
             n1->constraints.emplace_back(a1, v1, v2, t, true);
             n2->constraints.emplace_back(a1, v1, v2, t, false);
-            /*for (int i = max(0, t - k_robust); i <= min(t + k_robust, (int)paths[a1]->size() - 1); i++)
+            /*for (int i = std::max(0, t - k_robust); i <= std::min(t + k_robust, (int)paths[a1]->size() - 1); i++)
             {
                 if (paths[a1]->at(i).location == v1)
                 {
@@ -746,7 +747,7 @@ ECBS::~ECBS()
 
 bool ECBS::validate_solution() const
 {
-    list<std::shared_ptr<Conflict>> conflict;
+    std::list<std::shared_ptr<Conflict>> conflict;
     for (int a1 = 0; a1 < num_of_agents; a1++)
     {
         for (int a2 = a1 + 1; a2 < num_of_agents; a2++)
@@ -783,7 +784,7 @@ void ECBS::print_paths() const
 }
 
 
-// adding new nodes to FOCAL (those with min-f-val*f_weight between the old and new LB)
+// adding new nodes to FOCAL (those with std::min-f-val*f_weight between the old and new LB)
 void ECBS::update_focal_list()
 {
     ECBSNode* open_head = open_list.top();
@@ -887,17 +888,17 @@ void ECBS::get_solution()
     for (int k = 0; k < num_of_agents; k++)
     {
         /*if (k == 250)
-            cout << solution[k] << endl;
+            std::cout << solution[k] << std::endl;
         solution[k].clear();
         rt.build(solution, initial_constraints, k);
-        vector< vector<double> > h_values(goal_locations[k].size());
+        std::vector< std::vector<double> > h_values(goal_locations[k].size());
         for (int j = 0; j < (int) goal_locations[k].size(); j++)
         {
             h_values[j] = G.heuristics.at(goal_locations[k][j]);
         }
         solution[k] = path_planner.run(G, starts[k], goal_locations[k], rt, h_values);
         if (solution[k].empty())
-            cout << "ERROR" << endl;
+            std::cout << "ERROR" << std::endl;
         rt.clear();
         LL_num_expanded += path_planner.num_expanded;
         LL_num_generated += path_planner.num_generated;*/

@@ -81,7 +81,7 @@ bool KivaGrid::load_weighted_map(std::string fname)
 	myfile.close();
 	double runtime = (std::clock() - t) / CLOCKS_PER_SEC;
 	std::cout << "Map size: " << rows << "x" << cols << " with ";
-	cout << endpoints.size() << " endpoints and " <<
+	std::cout << endpoints.size() << " endpoints and " <<
 		agent_home_locations.size() << " home stations." << std::endl;
 	std::cout << "Done! (" << runtime << " s)" << std::endl;
 	return true;
@@ -192,7 +192,7 @@ bool KivaGrid::load_unweighted_map(std::string fname)
 	myfile.close();
     double runtime = (std::clock() - t) / CLOCKS_PER_SEC;
     std::cout << "Map size: " << rows << "x" << cols << " with ";
-	cout << endpoints.size() << " endpoints and " <<
+	std::cout << endpoints.size() << " endpoints and " <<
 	agent_home_locations.size() << " home stations." << std::endl;		
     std::cout << "Done! (" << runtime << " s)" << std::endl;
     return true;

@@ -1,7 +1,7 @@
 #include "PathTable.h"
 
 
-PathTable::PathTable(const vector<Path*>& paths, int window, int k_robust):
+PathTable::PathTable(const std::vector<Path*>& paths, int window, int k_robust):
     window(window), k_robust(k_robust)
 {
     num_of_agents = (int)paths.size();
@@ -37,10 +37,10 @@ void PathTable::remove(const Path* old_path, int agent)
 }
 
 
-list<std::shared_ptr<Conflict> > PathTable::add(const Path* new_path, int agent)
+std::list<std::shared_ptr<Conflict> > PathTable::add(const Path* new_path, int agent)
 {
-    list<std::shared_ptr<Conflict> > conflicts;
-    vector<bool> conflicting_agents(num_of_agents, false);
+    std::list<std::shared_ptr<Conflict> > conflicts;
+    std::vector<bool> conflicting_agents(num_of_agents, false);
     for (auto state : (*new_path))
     {
         if (state.timestep > window)
@@ -52,7 +52,7 @@ list<std::shared_ptr<Conflict> > PathTable::add(const Path* new_path, int agent)
             else if (abs(it->first - state.timestep) <= k_robust)
             {
                 conflicts.push_back(std::shared_ptr<Conflict>(
-                        new Conflict(agent, it->second, state.location, -1, min(it->first, state.timestep))));
+                        new Conflict(agent, it->second, state.location, -1, std::min(it->first, state.timestep))));
                 conflicting_agents[it->second] = true;
             }
         }

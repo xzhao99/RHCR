@@ -6,6 +6,12 @@
 #include "WHCAStar.h"
 #include "ECBS.h"
 #include "LRAStar.h"
+#include <list>
+#include <string>
+#include <tuple>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 
 class BasicSystem
@@ -17,7 +23,7 @@ public:
 	bool useDummyPaths;
     int time_limit;
     int travel_time_window;
-	//string potential_function;
+	//std::string potential_function;
 	//double potential_threshold;
 	//double suboptimal_bound;
     int screen;
@@ -49,11 +55,11 @@ public:
 	double saving_time = 0; // time for saving results to files, in seconds
     int num_of_tasks; // number of finished tasks
 
-	list<int> new_agents; // used for replanning a subgroup of agents
+	std::list<int> new_agents; // used for replanning a subgroup of agents
 
     // used for MAPF instance
-    vector<State> starts;
-    vector< vector<pair<int, int> > > goal_locations;
+    std::vector<State> starts;
+    std::vector< std::vector<std::pair<int, int> > > goal_locations;
 	// unordered_set<int> held_endpoints;
     int timestep;
 
@@ -62,18 +68,18 @@ public:
     std::vector<std::list<std::pair<int, int> > > finished_tasks; // location + finish time
 
     bool congested() const;
-	bool check_collisions(const vector<Path>& input_paths) const;
+	bool check_collisions(const std::vector<Path>& input_paths) const;
 
     // update
     void update_start_locations();
     void update_travel_times(std::unordered_map<int, double>& travel_times);
     void update_paths(const std::vector<Path*>& MAPF_paths, int max_timestep);
     void update_paths(const std::vector<Path>& MAPF_paths, int max_timestep);
-    void update_initial_paths(vector<Path>& initial_paths) const;
-    void update_initial_constraints(list< tuple<int, int, int> >& initial_constraints) const;
+    void update_initial_paths(std::vector<Path>& initial_paths) const;
+    void update_initial_constraints(std::list< std::tuple<int, int, int> >& initial_constraints) const;
     
-	void add_partial_priorities(const vector<Path>& initial_paths, PriorityGraph& initial_priorities) const;
-	list<tuple<int, int, int>> move(); // return finished tasks
+	void add_partial_priorities(const std::vector<Path>& initial_paths, PriorityGraph& initial_priorities) const;
+	std::list<std::tuple<int, int, int>> move(); // return finished tasks
 	void solve();
 	void initialize_solvers();
 	bool load_records();
@@ -81,11 +87,10 @@ public:
 
 
 protected:
-	bool solve_by_WHCA(vector<Path>& planned_paths,
-		const vector<State>& new_starts, const vector< vector<pair<int, int> > >& new_goal_locations);
+	bool solve_by_WHCA(std::vector<Path>& planned_paths,
+		const std::vector<State>& new_starts, const std::vector< std::vector<std::pair<int, int> > >& new_goal_locations);
     bool LRA_called = false;
 
 private:
 	const BasicGraph& G;
 };
-

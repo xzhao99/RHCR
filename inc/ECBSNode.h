@@ -1,20 +1,25 @@
 #pragma once
 #include "common.h"
 #include "States.h"
+#include <cstddef>
+#include <cstdint>
+#include <list>
+#include <memory>
+#include <tuple>
 
 class ECBSNode
 {
 public:
-    // the following is used to comapre nodes in the OPEN list
+    // the following is used to comapre nodes in the OPEN std::list
     struct compare_node
     {
         bool operator()(const ECBSNode* n1, const ECBSNode* n2) const
         {
             return n1->min_f_val >= n2->min_f_val;
         }
-    };  // used by OPEN to compare nodes by sum_min_f_vals (top of the heap has min sum_min_f_vals)
+    };  // used by OPEN to compare nodes by sum_min_f_vals (top of the heap has std::min sum_min_f_vals)
 
-    // the following is used to comapre nodes in the FOCAL list
+    // the following is used to comapre nodes in the FOCAL std::list
     struct secondary_compare_node
     {
         bool operator()(const ECBSNode* n1, const ECBSNode* n2) const
@@ -25,7 +30,7 @@ public:
             }
      		return n1->num_of_collisions >= n2->num_of_collisions;
      	}
-    };  // used by FOCAL to compare nodes by num_of_collisions (top of the heap has min h-val)
+    };  // used by FOCAL to compare nodes by num_of_collisions (top of the heap has std::min h-val)
 
     typedef fibonacci_heap< ECBSNode*, compare<ECBSNode::compare_node> >::
         handle_type open_handle_t;
@@ -45,7 +50,7 @@ public:
     ECBSNode* parent;
 
 
-    list< tuple<int, Path, double, double> > paths; // <agent_id, path, lower_bound, path_cost>
+    std::list< std::tuple<int, Path, double, double> > paths; // <agent_id, path, lower_bound, path_cost>
     std::list<Constraint> constraints; // constraints imposed to agent_id
 
     double g_val;
