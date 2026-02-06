@@ -4,7 +4,6 @@
   "dependencies": [
     "boost-program-options",
     "boost-system",
-    "boost-filesystem",
     "boost-heap",
     "boost-graph"
   ]

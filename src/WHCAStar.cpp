@@ -1,5 +1,7 @@
 #include "WHCAStar.h"
 
+#include <random>
+
 WHCAStar::WHCAStar(const BasicGraph &G, SingleAgentSolver& path_planner) : MAPFSolver(G, path_planner) {}
 
 
@@ -36,7 +38,14 @@ bool WHCAStar::run(const vector<State>& starts,
     {
         num_restarts++;
         // generate random priority order
+# if 0 // removed in c++-17
         std::random_shuffle(priorities.begin(), priorities.end());
+#else
+		std::random_device rd;
+    	std::mt19937 g(rd());
+ 
+    	std::shuffle(priorities.begin(), priorities.end(), g);
+#endif
 
         solution_cost = 0;
         solution = initial_solution;

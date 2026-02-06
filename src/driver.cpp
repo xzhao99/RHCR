@@ -4,7 +4,7 @@
 #include "BeeSystem.h"
 #include "ID.h"
 #include <boost/program_options.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 
 void set_parameters(BasicSystem& system, const boost::program_options::variables_map& vm)
@@ -164,14 +164,14 @@ int main(int argc, char** argv)
     }
 
     // make dictionary
-	boost::filesystem::path dir(vm["output"].as<std::string>() +"/");
-	boost::filesystem::create_directories(dir);
+	std::filesystem::path dir(vm["output"].as<std::string>() +"/");
+	std::filesystem::create_directories(dir);
 	if (vm["log"].as<bool>())
 	{
-		boost::filesystem::path dir1(vm["output"].as<std::string>() + "/goal_nodes/");
-		boost::filesystem::path dir2(vm["output"].as<std::string>() + "/search_trees/");
-		boost::filesystem::create_directories(dir1);
-		boost::filesystem::create_directories(dir2);
+		std::filesystem::path dir1(vm["output"].as<std::string>() + "/goal_nodes/");
+		std::filesystem::path dir2(vm["output"].as<std::string>() + "/search_trees/");
+		std::filesystem::create_directories(dir1);
+		std::filesystem::create_directories(dir2);
 	}
 
 

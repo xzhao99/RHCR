@@ -1,5 +1,7 @@
 #include "LRAStar.h"
 
+#include <random>
+
 LRAStar::LRAStar(const BasicGraph &G, SingleAgentSolver& path_planner): MAPFSolver(G, path_planner), num_expanded(0), num_generated(0) {}
 
 
@@ -177,7 +179,15 @@ void LRAStar::resolve_conflicts(const vector<Path>& input_paths)
         {
             agents_list[k] = k;
         }
+		
+# if 0 // removed in c++-17
         std::random_shuffle(agents_list.begin(), agents_list.end());
+#else
+		std::random_device rd;
+    	std::mt19937 g(rd());
+ 
+    	std::shuffle(agents_list.begin(), agents_list.end(), g);
+	#endif
         for (auto agent : agents_list)
         {
 			if (path_pointers[agent] >= (int) input_paths[agent].size())
