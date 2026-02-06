@@ -50,7 +50,7 @@ Path LRAStar::find_shortest_path(const State& start, const vector<pair<int, int>
 	};
 
 	fibonacci_heap< StateTimeAStarNode*, compare<StateTimeAStarNode::compare_node> > open_list;
-	unordered_set< StateTimeAStarNode*, Hasher, EqNode> allNodes_table;
+	std::unordered_set< StateTimeAStarNode*, Hasher, EqNode> allNodes_table;
 	// generate start and add it to the OPEN list
 	double h_val = path_planner.compute_h_value(G, start.location, 0, goal_locations);
 	auto root = new StateTimeAStarNode(start, 0, h_val, nullptr, 0);

@@ -518,13 +518,13 @@ void BasicSystem::save_results()
 }
 
 
-void BasicSystem::update_travel_times(unordered_map<int, double>& travel_times)
+void BasicSystem::update_travel_times(std::unordered_map<int, double>& travel_times)
 {
     if (travel_time_window <= 0)
         return;
 
     travel_times.clear();
-    unordered_map<int, int> count;
+    std::unordered_map<int, int> count;
 
     int t_min = max(0, timestep - travel_time_window);
     if (t_min >= timestep)
@@ -574,7 +574,7 @@ void BasicSystem::solve()
 	if (solver.get_name() == "LRA")
 	{
 		// predict travel time
-		unordered_map<int, double> travel_times;
+		std::unordered_map<int, double> travel_times;
 		update_travel_times(solver.travel_times);
 
 		bool sol = solver.run(starts, goal_locations, time_limit);

@@ -50,7 +50,7 @@ bool SortingGrid::load_map(std::string fname)
 			this->inducts[beg->c_str()] = i; // read induct station id
 		else if (types[i] == "Eject")
 		{
-			boost::unordered_map<std::string, std::list<int> >::iterator it = ejects.find(beg->c_str());
+			auto it = ejects.find(beg->c_str());
 			if (it == ejects.end())
 			{
 				this->ejects[beg->c_str()] = std::list<int>();

@@ -1,6 +1,6 @@
 project(lifelong)
 
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.20)
 set(CMAKE_CXX_STANDARD 11)
 
 IF(NOT CMAKE_BUILD_TYPE)
@@ -14,9 +14,12 @@ include_directories("inc")
 file(GLOB SOURCES "src/*.cpp")
 
 # Find Boost
-find_package( Boost 1.49.0 REQUIRED COMPONENTS program_options system filesystem)
-include_directories( ${Boost_INCLUDE_DIRS} )
+find_package( Boost REQUIRED COMPONENTS program_options system filesystem)
+message(STATUS "Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
+message(STATUS "Boost_LIBRARIES: ${Boost_LIBRARIES}")
 
 
 add_executable(lifelong ${SOURCES} )
-target_link_libraries(lifelong ${Boost_LIBRARIES})
+
+target_include_directories(lifelong PRIVATE ${Boost_INCLUDE_DIRS} )
+target_link_libraries(lifelong PRIVATE ${Boost_LIBRARIES})

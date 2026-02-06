@@ -94,7 +94,7 @@ private:
     // define typedefs and handles for heap and hash_map
     fibonacci_heap< SIPPNode*, compare<SIPPNode::compare_node> > open_list;
     fibonacci_heap< SIPPNode*, compare<SIPPNode::secondary_compare_node> > focal_list;
-    unordered_set< SIPPNode*, SIPPNode::Hasher, SIPPNode::EqNode> allNodes_table;
+    std::unordered_set< SIPPNode*, SIPPNode::Hasher, SIPPNode::EqNode> allNodes_table;
 	inline void releaseClosedListNodes();
 
     void generate_node(const Interval& interval, SIPPNode* curr, const BasicGraph& G,

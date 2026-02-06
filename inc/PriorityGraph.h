@@ -16,10 +16,10 @@ public:
     void add(int from, int to); // from is lower than to
     void remove(int from, int to); // from is lower than to
     bool connected(int from, int to) const;
-    boost::unordered_set<int> get_reachable_nodes(int root);
+    std::unordered_set<int> get_reachable_nodes(int root);
 
     void save_as_digraph(std::string fname) const;
-    typedef boost::unordered_map<int, boost::unordered_set<int> > PGraph_t;
+    typedef std::unordered_map<int, std::unordered_set<int> > PGraph_t;
 
     void update_number_of_lower_nodes(vector<int>& lower_nodes, int node) const;
 

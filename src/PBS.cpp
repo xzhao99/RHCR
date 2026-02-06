@@ -372,7 +372,7 @@ bool PBS::wait_at_start(const Path& path, int start_location, int timestep)
 
 
 void PBS::find_replan_agents(PBSNode* node, const list<Conflict>& conflicts,
-        unordered_set<int>& replan)
+        std::unordered_set<int>& replan)
 {
     clock_t t2 = clock();
     for (const auto& conflict : conflicts)
@@ -411,7 +411,7 @@ bool PBS::find_consistent_paths(PBSNode* node, int agent)
 {
     clock_t t = clock();
     int count = 0; // count the times that we call the low-level search.
-    unordered_set<int> replan;
+    std::unordered_set<int> replan;
     if (agent >= 0 && agent < num_of_agents)
         replan.insert(agent);
     find_replan_agents(node, node->conflicts, replan);

@@ -69,11 +69,11 @@ bool PriorityGraph::connected(int from, int to) const
 }
 
 
-boost::unordered_set<int> PriorityGraph::get_reachable_nodes(int root)
+std::unordered_set<int> PriorityGraph::get_reachable_nodes(int root)
 {
     clock_t t = std::clock();
     std::list<int> open_list;
-    boost::unordered_set<int> closed_list;
+    std::unordered_set<int> closed_list;
 
     open_list.push_back(root);
     while (!open_list.empty())

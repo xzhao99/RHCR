@@ -21,7 +21,7 @@ public:
     double min_f_val;  // min f-val seen so far
     int num_of_conf; // number of conflicts between this agent to all the other agents
 
-	unordered_map<int, double> travel_times;
+	std::unordered_map<int, double> travel_times;
 
 	double compute_h_value(const BasicGraph& G, int curr, int goal_id,
 		const vector<pair<int, int> >& goal_location) const;

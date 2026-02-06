@@ -26,7 +26,7 @@ public:
     list< tuple<int, int, int> > initial_constraints; // <agent, location, timestep>:
     // only this agent can stay in this location before this timestep.
 	list<const Path*> initial_soft_path_constraints; // the paths that all agents try to avoid
-	unordered_map<int, double> travel_times;
+	std::unordered_map<int, double> travel_times;
 
 
 	SingleAgentSolver& path_planner;
@@ -58,7 +58,7 @@ public:
     void print_solution() const;
 protected:
     vector<vector<bool> > cat; // conflict avoidance table
-    vector<unordered_set< pair<int, int> > > constraint_table;
+    vector<std::unordered_set<std::pair<int, int>, pair_hash> > constraint_table;
     ReservationTable rt;
 };
 

@@ -65,7 +65,7 @@ private:
     // double focal_w = 1.0;
     // unordered_map<int, double> travel_times;
 
-    unordered_set<pair<int, int>> nogood;
+    std::unordered_set<std::pair<int, int>, pair_hash> nogood;
 
     bool generate_root_node();
     void push_node(ECBSNode* node);

@@ -11,9 +11,11 @@ sudo apt install libboost-all-dev
 ```
 
 After you installed BOOST and downloaded the source code, go into the directory of the source code and compile it with CMake: 
+
 ```
-cmake .
-make
+cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE:PATH=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
+
+cmake --build build --config Debug
 ```
 
 Then, you are able to run the code:

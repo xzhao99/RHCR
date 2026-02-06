@@ -14,7 +14,7 @@ public:
 
 private:
 	const KivaGrid& G;
-	unordered_set<int> held_endpoints;
+	std::unordered_set<int> held_endpoints;
 
 	void initialize();
 	void initialize_start_locations();

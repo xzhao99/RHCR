@@ -18,7 +18,7 @@ private:
 	const SortingGrid& G;
 
     // record usage of induct stations
-    boost::unordered_map<int, int> drives_in_induct_stations; // induct location + #drives that intends to go to this induct station
+    std::unordered_map<int, int> drives_in_induct_stations; // induct location + #drives that intends to go to this induct station
 
 	void initialize();
 

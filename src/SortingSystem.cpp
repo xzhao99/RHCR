@@ -132,7 +132,7 @@ int SortingSystem::assign_induct_station(int curr) const
 int SortingSystem::assign_eject_station() const
 {
 	int n = rand() % G.ejects.size();
-	boost::unordered_map<std::string, std::list<int> >::const_iterator it = G.ejects.begin();
+	auto it = G.ejects.begin();
 	std::advance(it, n);
 	int p = rand() % it->second.size();
 	auto it2 = it->second.begin();

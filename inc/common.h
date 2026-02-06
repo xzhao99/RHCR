@@ -8,14 +8,14 @@
 #include <ctime>
 #include <fstream>
 #include <set>
+#include <unordered_set>
+#include <unordered_map>
 #include <boost/heap/fibonacci_heap.hpp>
-#include <boost/unordered_set.hpp>
-#include <boost/unordered_map.hpp>
+
 
 using boost::heap::fibonacci_heap;
 using boost::heap::compare;
-using boost::unordered_set;
-using boost::unordered_map;
+
 
 using std::set;
 using std::vector;
@@ -38,6 +38,19 @@ using std::min;
 //typedef confilctGraph_t::edge_descriptor edge_t;
 
 enum heuristics_type { NONE, CG, DG, WDG, STRATEGY_COUNT };
+
+// C++ STL does not provide a default hash function for std::pair
+struct pair_hash {
+    template <class T1, class T2>
+    std::size_t operator () (const std::pair<T1, T2>& p) const {
+        auto h1 = std::hash<T1>{}(p.first);
+        auto h2 = std::hash<T2>{}(p.second);
+
+        // Simple combination: XOR. 
+        // For production, consider a better combine function like boost::hash_combine
+        return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
+    }
+};
 
 typedef tuple<int, int, int, int, bool> Constraint;
 typedef tuple<int, int, int, int, int> Conflict;

@@ -284,7 +284,7 @@ void ReservationTable::insertPath2CAT(const Path& path)
 // For PBS
 void ReservationTable::build(const vector<Path*>& paths,
         const list< tuple<int, int, int> >& initial_constraints,
-        const unordered_set<int>& high_priority_agents, int current_agent, int start_location)
+        const std::unordered_set<int>& high_priority_agents, int current_agent, int start_location)
 {
     clock_t t = std::clock();
 

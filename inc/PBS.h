@@ -69,7 +69,7 @@ private:
     std::clock_t start = 0;
 
 	// double focal_w = 1.0;
-    unordered_set<pair<int, int>> nogood;
+    std::unordered_set<pair<int, int>, pair_hash> nogood;
 
     // SingleAgentICBS astar;
 
@@ -121,6 +121,6 @@ private:
     // tools
     static bool wait_at_start(const Path& path, int start_location, int timestep) ;
     void find_replan_agents(PBSNode* node, const list<Conflict>& conflicts,
-            unordered_set<int>& replan);
+            std::unordered_set<int>& replan);
 };
 

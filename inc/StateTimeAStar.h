@@ -113,7 +113,7 @@ public:
     void findTrajectory(const BasicGraph& G,
                         const State& start,
                         const vector<pair<int, int> >& goal_locations,
-                        const unordered_map<int, double>& travel_times,
+                        const std::unordered_map<int, double>& travel_times,
                         list<pair<int, int> >& path);
     StateTimeAStar(): SingleAgentSolver() {}
 
@@ -121,7 +121,7 @@ private:
 	// define typedefs and handles for heap and hash_map
 	fibonacci_heap< StateTimeAStarNode*, compare<StateTimeAStarNode::compare_node> > open_list;
 	fibonacci_heap< StateTimeAStarNode*, compare<StateTimeAStarNode::secondary_compare_node> > focal_list;
-	unordered_set< StateTimeAStarNode*, StateTimeAStarNode::Hasher, StateTimeAStarNode::EqNode> allNodes_table;
+	std::unordered_set< StateTimeAStarNode*, StateTimeAStarNode::Hasher, StateTimeAStarNode::EqNode> allNodes_table;
 	inline void releaseClosedListNodes();
 
     // Updates the path

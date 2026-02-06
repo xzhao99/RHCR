@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 #include "States.h"
-
+#include <climits>
 #define WEIGHT_MAX INT_MAX/2
 
 
@@ -9,7 +9,7 @@ class BasicGraph
 {
 public:
     vector<std::string> types;
-    unordered_map<int, vector<double>> heuristics;
+    std::unordered_map<int, vector<double>> heuristics;
     virtual ~BasicGraph()= default;
     string map_name;
 	virtual bool load_map(string fname) = 0;

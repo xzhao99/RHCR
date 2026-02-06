@@ -237,7 +237,7 @@ Path StateTimeAStar::run(const BasicGraph& G, const State& start,
 void StateTimeAStar::findTrajectory(const BasicGraph& G,
                      const State& start,
                      const vector<pair<int, int> >& goal_locations,
-                     const unordered_map<int, double>& travel_times,
+                     const std::unordered_map<int, double>& travel_times,
                      list<pair<int, int> >& trajectory)
 {
     num_expanded = 0;

@@ -19,7 +19,7 @@ public:
 	void copy(const ReservationTable& other) {sit = other.sit; ct = other.ct; cat = other.cat; }
     void build(const vector<Path*>& paths,
                const list< tuple<int, int, int> >& initial_constraints,
-               const unordered_set<int>& high_priority_agents, int current_agent, int start_location);
+               const std::unordered_set<int>& high_priority_agents, int current_agent, int start_location);
     void build(const vector<Path>& paths,
                const list< tuple<int, int, int> >& initial_constraints,
                int current_agent);
@@ -47,11 +47,11 @@ public:
 private:
 	const BasicGraph& G;
 	// Constraint Table (CT)
-	unordered_map<size_t, list<pair<int, int> > > ct; // location/edge -> time range
+	std::unordered_map<size_t, list<pair<int, int> > > ct; // location/edge -> time range
 	// Conflict Avoidance Table (CAT)
 	vector<vector<bool> > cat; //  (timestep, location) ->  have conflicts or not
 	// Safe Interval Table (SIT)
-	unordered_map<size_t, list<Interval > > sit; // location/edge -> [t_min, t_max), num_of_collisions
+	std::unordered_map<size_t, list<Interval > > sit; // location/edge -> [t_min, t_max), num_of_collisions
 
 	void updateSIT(size_t location); // update SIT at the gvien location
 	void mergeIntervals(list<Interval >& intervals) const; //merge successive safe intervals with the same number of conflicts.
@@ -64,6 +64,6 @@ private:
 	void insertPath2CAT(const Path& path); //  insert the path to the conflict avoidance table
 	void addInitialConstraints(const list< tuple<int, int, int> >& initial_constraints, int current_agent);
 	inline int getEdgeIndex(int from, int to) const {return (from + 1) * map_size + to; }
-	inline pair<int, int> getEdge(int index) const {return make_pair(index / map_size - 1, index % map_size); }
+	inline std::pair<int, int> getEdge(int index) const {return std::make_pair(index / map_size - 1, index % map_size); }
 
 };
